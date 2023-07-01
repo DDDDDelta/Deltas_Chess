@@ -49,27 +49,18 @@ enum class E_Side : std::uint8_t {
 };
 
 
-struct Piece {
-    E_Side side;
-    E_PieceType type;
-    std::uint8_t value;
-    std::function<PieceMove* (const BoardCoor&)> move;
+struct I_Piece {
+    virtual PieceMove* move(const BoardCoor& co) = 0;
+};
+
+struct WhitePawn : public I_Piece {
+    PieceMove* move(const BoardCoor& co) override;
 };
 
 
-extern const Piece white_pawn;
-extern const Piece white_knight;
-extern const Piece white_bishop;
-extern const Piece white_rook;
-extern const Piece white_queen;
-extern const Piece white_king;
-extern const Piece black_pawn;
-extern const Piece black_knight;
-extern const Piece black_bishop;
-extern const Piece black_rook;
-extern const Piece black_queen ;
-extern const Piece black_king;
-extern const Piece empty;
+struct WhiteKnight : public I_Piece {
+    PieceMove* move(const BoardCoor& co) override;
+};
 
 
 NAMESPACE_DDDELTA_END
