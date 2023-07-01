@@ -1,0 +1,8 @@
+#pragma once
+
+#ifndef DELTAS_CHESS_CHESS_MACROS_H
+#define DELTAS_CHESS_CHESS_MACROS_H
+
+
+
+#endif //DELTAS_CHESS_CHESS_MACROS_H
