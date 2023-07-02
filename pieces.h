@@ -16,17 +16,9 @@ NAMESPACE_DDDELTA_START
 struct BoardCoor {
     std::uint8_t x;
     std::uint8_t y;
-};
 
-
-enum class E_PieceType : std::uint8_t {
-    PAWN,
-    KNIGHT,
-    BISHOP,
-    ROOK,
-    QUEEN,
-    KING,
-    EMPTY
+    [[nodiscard]] bool on_board(std::int8_t delta_x, std::int8_t delta_y) const;
+    bool operator ==(const BoardCoor& rhs) const;
 };
 
 
@@ -34,6 +26,7 @@ struct PieceMove {
     struct Next;
     BoardCoor curr;
     std::vector<std::unique_ptr<Next>> next;
+    bool is_valid(const BoardCoor& co);
 
     struct Next {
         BoardCoor coor;
