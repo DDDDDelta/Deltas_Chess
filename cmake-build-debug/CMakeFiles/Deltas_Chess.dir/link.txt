@@ -1,0 +1,3 @@
+"D:\Program Files\JetBrains\CLion 2023.1.4\bin\cmake\win\x64\bin\cmake.exe" -E rm -f CMakeFiles\Deltas_Chess.dir/objects.a
+D:\PROGRA~2\JETBRA~1\CLION2~1.4\bin\mingw\bin\ar.exe qc CMakeFiles\Deltas_Chess.dir/objects.a @CMakeFiles\Deltas_Chess.dir\objects1
+D:\PROGRA~2\JETBRA~1\CLION2~1.4\bin\mingw\bin\G__~1.EXE -g -Wl,--whole-archive CMakeFiles\Deltas_Chess.dir/objects.a -Wl,--no-whole-archive -o Deltas_Chess.exe -Wl,--out-implib,libDeltas_Chess.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Deltas_Chess.dir\linkLibs.rsp
