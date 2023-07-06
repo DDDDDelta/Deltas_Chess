@@ -12,11 +12,13 @@ bool BoardCoor::on_board(std::int8_t delta_x, std::int8_t delta_y) const {
         return true;
 }
 
+
 bool BoardCoor::operator ==(const DDDelta::BoardCoor &rhs) const {
     return this->x == rhs.x && this->y == rhs.y;
 }
 
-bool PieceMove::is_valid(const DDDelta::BoardCoor& co) {
+
+bool PieceMove::is_valid(const DDDelta::BoardCoor& co) const {
     for (const auto& up_next : this->next) {
         auto* p_next = up_next.get();
         while (p_next) {
@@ -29,7 +31,7 @@ bool PieceMove::is_valid(const DDDelta::BoardCoor& co) {
 }
 
 
-PieceMove* WhitePawn::move(const BoardCoor& co) {
+PieceMove* WhitePawn_move(const BoardCoor& co) {
     auto ret = new PieceMove {co};
 
     if (co.x > 1 && co.y < 8)
@@ -54,7 +56,7 @@ PieceMove* WhitePawn::move(const BoardCoor& co) {
 }
 
 
-PieceMove* WhiteKnight::move(const BoardCoor& co) {
+PieceMove* WhiteKnight_move(const BoardCoor& co) {
     auto ret = new PieceMove {co};
 
     if (co.on_board(-1, 2))
