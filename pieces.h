@@ -2,7 +2,7 @@
 #ifndef DELTAS_CHESS_PIECES_H
 #define DELTAS_CHESS_PIECES_H
 
-#include <cstdint>
+#include <cstddef>
 #include <string>
 #include <functional>
 #include <vector>
@@ -22,27 +22,42 @@ struct BoardCoor {
 };
 
 
-struct PieceMove {
-    struct Next;
-    BoardCoor curr;
-    std::vector<std::unique_ptr<Next>> next;
-    [[nodiscard]] bool is_valid(const BoardCoor& co) const;
-
-    struct Next {
-        BoardCoor coor;
-        std::unique_ptr<Next> following;
-    };
+enum class E_PieceColor : std::uint8_t {
+    White,
+    Black,
+    Neither
 };
 
 
-enum class E_Side : std::uint8_t {
-    WHITE,
-    BLACK,
-    NEITHER
+enum class E_PieceType : char {
+    Empty = ' ',
+    Pawn = 'P',
+    Knight = 'N',
+    Bishop = 'B',
+    King = 'K',
+    Rook = 'R',
+    Queen = 'Q'
 };
 
 
+struct Piece {
+    E_PieceColor color;
+    E_PieceType type;
+};
 
+
+extern const Piece WhiteKing;
+extern const Piece WhiteQueen;
+extern const Piece WhiteRook;
+extern const Piece WhiteBishop;
+extern const Piece WhiteKnight;
+extern const Piece WhitePawn;
+extern const Piece BlackKing;
+extern const Piece BlackQueen;
+extern const Piece BlackRook;
+extern const Piece BlackBishop;
+extern const Piece BlackKnight;
+extern const Piece BlackPawn;
 
 NAMESPACE_DDDELTA_END
 #endif //DELTAS_CHESS_PIECES_H

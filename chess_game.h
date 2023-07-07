@@ -8,7 +8,6 @@
 #include "pieces.h"
 #include "player.h"
 #include "board.h"
-#include "board_operator.h"
 
 NAMESPACE_DDDELTA_START
 

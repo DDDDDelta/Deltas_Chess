@@ -17,7 +17,7 @@ bool BoardCoor::operator ==(const DDDelta::BoardCoor &rhs) const {
     return this->x == rhs.x && this->y == rhs.y;
 }
 
-
+/*
 bool PieceMove::is_valid(const DDDelta::BoardCoor& co) const {
     for (const auto& up_next : this->next) {
         auto* p_next = up_next.get();
@@ -29,8 +29,9 @@ bool PieceMove::is_valid(const DDDelta::BoardCoor& co) const {
     }
     return false;
 }
+*/
 
-
+/*
 PieceMove* WhitePawn_move(const BoardCoor& co) {
     auto ret = new PieceMove {co};
 
@@ -56,7 +57,7 @@ PieceMove* WhitePawn_move(const BoardCoor& co) {
 }
 
 
-PieceMove* WhiteKnight_move(const BoardCoor& co) {
+PieceMove* Knight_move(const BoardCoor& co) {
     auto ret = new PieceMove {co};
 
     if (co.on_board(-1, 2))
@@ -101,7 +102,20 @@ PieceMove* WhiteKnight_move(const BoardCoor& co) {
 
     return ret;
 }
+*/
 
-
+const Piece WhiteKing = { E_PieceColor::White, E_PieceType::King };
+const Piece WhiteQueen = { E_PieceColor::White, E_PieceType::Queen };
+const Piece WhiteRook = { E_PieceColor::White, E_PieceType::Rook };
+const Piece WhiteBishop = { E_PieceColor::White, E_PieceType::Bishop };
+const Piece WhiteKnight = { E_PieceColor::White, E_PieceType::Knight };
+const Piece WhitePawn = { E_PieceColor::White, E_PieceType::Pawn };
+const Piece BlackKing = { E_PieceColor::Black, E_PieceType::King };
+const Piece BlackQueen = { E_PieceColor::Black, E_PieceType::Queen };
+const Piece BlackRook = { E_PieceColor::Black, E_PieceType::Rook };
+const Piece BlackBishop = { E_PieceColor::Black, E_PieceType::Bishop };
+const Piece BlackKnight = { E_PieceColor::Black, E_PieceType::Knight };
+const Piece BlackPawn = { E_PieceColor::Black, E_PieceType::Pawn };
+const Piece Empty = { E_PieceColor::Neither, E_PieceType::Empty };
 
 NAMESPACE_DDDELTA_END
