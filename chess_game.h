@@ -10,27 +10,28 @@
 #include "board.h"
 
 NAMESPACE_DDDELTA_START
-
 class ChessGame {
 public:
+    enum class E_Result : std::uint8_t;
     ChessGame(Player pwhite, Player pblack);
     ChessGame(GameRecord record);
+
+private:
+    Player player_white;
+    Player player_black;
+    Board board;
+    bool white_king_move;
+    bool black_king_move;
+    E_Result res;
+
+public:
     enum class E_Result : std::uint8_t {
         WHITE_WIN,
         BLACK_WIN,
         DRAW,
         UNFINISHED
     };
-    Player player_white;
-    Player player_black;
-    Board board;
-    E_Side turn;
-    bool white_king_move;
-    bool black_king_move;
-    std::vector<Move> moves;
-    E_Result res;
 };
-
 NAMESPACE_DDDELTA_END
 
 #endif //DELTAS_CHESS_CHESS_GAME_H

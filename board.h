@@ -10,14 +10,23 @@
 #include "code_utils.h"
 
 NAMESPACE_DDDELTA_START
+enum class E_BoardStatus : std::uint8_t {
+    WAITING_TO_START,
+    PAUSED,
+    WHITES_TURN,
+    BLACKS_TURN,
+    ENDED
+};
+
 
 class Board {
 public:
     using ChessBoard = std::array<std::array<Piece, 8>, 8>;
     Board();
-    Piece& get_piece(std::uint8_t x, std::uint8_t y);
+    [[nodiscard]] Piece& get_piece(BoardCoor co);
+    [[nodiscard]] const ChessBoard& get_board() const;
     void set_up();
-    void initialize();
+    void reset();
 
 private:
     ChessBoard _board;
@@ -25,8 +34,7 @@ private:
     std::vector<Piece> _captured_black;
     std::uint16_t _white_lost_val;
     std::uint16_t _black_lost_val;
+
 };
-
 NAMESPACE_DDDELTA_END
-
 #endif //DELTAS_CHESS_BOARD_H

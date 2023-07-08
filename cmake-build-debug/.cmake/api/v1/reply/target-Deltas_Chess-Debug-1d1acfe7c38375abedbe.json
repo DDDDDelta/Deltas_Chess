@@ -176,12 +176,12 @@
 		{
 			"backtrace" : 1,
 			"compileGroupIndex" : 0,
-			"path" : "board_operator.cpp",
+			"path" : "moves.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 1,
-			"path" : "board_operator.h",
+			"path" : "moves.h",
 			"sourceGroupIndex" : 1
 		}
 	],
