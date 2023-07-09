@@ -12,13 +12,6 @@
 NAMESPACE_DDDELTA_START
 using ChessBoard = std::array<std::array<Piece, 8>, 8>;
 
-enum class E_BoardStatus : std::uint8_t {
-    WAITING_TO_START,
-    PAUSED,
-    WHITES_TURN,
-    BLACKS_TURN,
-    ENDED
-};
 
 
 class Board {
