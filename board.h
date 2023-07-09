@@ -13,7 +13,6 @@ NAMESPACE_DDDELTA_START
 using ChessBoard = std::array<std::array<Piece, 8>, 8>;
 
 
-
 class Board {
 public:
     Board();

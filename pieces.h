@@ -45,6 +45,7 @@ struct Piece {
     E_PieceType type;
 };
 
+
 constexpr Piece WhiteKing = {E_Color::White, E_PieceType::King };
 constexpr Piece WhiteQueen = {E_Color::White, E_PieceType::Queen };
 constexpr Piece WhiteRook = {E_Color::White, E_PieceType::Rook };

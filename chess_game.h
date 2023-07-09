@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <utility>
 #include <tuple>
+#include <memory>
 
 #include "pieces.h"
 #include "player.h"
@@ -38,7 +39,8 @@ public:
     const Player player_black;
 
     // information from frontend
-    const PossibleMovement* select_piece(BoardCoor co) const;
+    std::unique_ptr<PossibleMovement> select_piece(BoardCoor co) const;
+
 
 private:
     bool _at_selection;
