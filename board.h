@@ -10,6 +10,8 @@
 #include "code_utils.h"
 
 NAMESPACE_DDDELTA_START
+using ChessBoard = std::array<std::array<Piece, 8>, 8>;
+
 enum class E_BoardStatus : std::uint8_t {
     WAITING_TO_START,
     PAUSED,
@@ -21,7 +23,6 @@ enum class E_BoardStatus : std::uint8_t {
 
 class Board {
 public:
-    using ChessBoard = std::array<std::array<Piece, 8>, 8>;
     Board();
     [[nodiscard]] Piece& get_piece(BoardCoor co);
     [[nodiscard]] const ChessBoard& get_board() const;

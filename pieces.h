@@ -22,7 +22,7 @@ struct BoardCoor {
 extern constexpr BoardCoor INVALID_COOR { 0 , 0 };
 
 
-enum class E_PieceColor : std::uint8_t {
+enum class E_Color : std::uint8_t {
     White,
     Black,
     Neither
@@ -41,24 +41,23 @@ enum class E_PieceType : char {
 
 
 struct Piece {
-    E_PieceColor color;
+    E_Color color;
     E_PieceType type;
 };
 
-constexpr Piece WhiteKing = { E_PieceColor::White, E_PieceType::King };
-constexpr Piece WhiteQueen = { E_PieceColor::White, E_PieceType::Queen };
-constexpr Piece WhiteRook = { E_PieceColor::White, E_PieceType::Rook };
-constexpr Piece WhiteBishop = { E_PieceColor::White, E_PieceType::Bishop };
-constexpr Piece WhiteKnight = { E_PieceColor::White, E_PieceType::Knight };
-constexpr Piece WhitePawn = { E_PieceColor::White, E_PieceType::Pawn };
-constexpr Piece BlackKing = { E_PieceColor::Black, E_PieceType::King };
-constexpr Piece BlackQueen = { E_PieceColor::Black, E_PieceType::Queen };
-constexpr Piece BlackRook = { E_PieceColor::Black, E_PieceType::Rook };
-constexpr Piece BlackBishop = { E_PieceColor::Black, E_PieceType::Bishop };
-constexpr Piece BlackKnight = { E_PieceColor::Black, E_PieceType::Knight };
-constexpr Piece BlackPawn = { E_PieceColor::Black, E_PieceType::Pawn };
-constexpr Piece Empty = { E_PieceColor::Neither, E_PieceType::Empty };
-
+constexpr Piece WhiteKing = {E_Color::White, E_PieceType::King };
+constexpr Piece WhiteQueen = {E_Color::White, E_PieceType::Queen };
+constexpr Piece WhiteRook = {E_Color::White, E_PieceType::Rook };
+constexpr Piece WhiteBishop = {E_Color::White, E_PieceType::Bishop };
+constexpr Piece WhiteKnight = {E_Color::White, E_PieceType::Knight };
+constexpr Piece WhitePawn = {E_Color::White, E_PieceType::Pawn };
+constexpr Piece BlackKing = {E_Color::Black, E_PieceType::King };
+constexpr Piece BlackQueen = {E_Color::Black, E_PieceType::Queen };
+constexpr Piece BlackRook = {E_Color::Black, E_PieceType::Rook };
+constexpr Piece BlackBishop = {E_Color::Black, E_PieceType::Bishop };
+constexpr Piece BlackKnight = {E_Color::Black, E_PieceType::Knight };
+constexpr Piece BlackPawn = {E_Color::Black, E_PieceType::Pawn };
+constexpr Piece Empty = {E_Color::Neither, E_PieceType::Empty };
 NAMESPACE_DDDELTA_END
 #endif //DELTAS_CHESS_PIECES_H
 

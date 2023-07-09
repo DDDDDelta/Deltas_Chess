@@ -5,32 +5,31 @@
 #include <vector>
 #include <cstdint>
 #include <utility>
+#include <tuple>
+
 #include "pieces.h"
 #include "player.h"
 #include "board.h"
+#include "game_record.h"
 
 NAMESPACE_DDDELTA_START
 class ChessGame {
 public:
-    enum class E_Result : std::uint8_t;
     ChessGame(Player pwhite, Player pblack);
-    ChessGame(GameRecord record);
+    ChessGame(GameRecord&& record);
+
+    [[nodiscard]] inline
+    E_Result get_result() const { return this->_res; };
+    [[nodiscard]] inline
+    const ChessBoard& get_board() const { return this->_board.get_board(); }
+    const Player player_white;
+    const Player player_black;
 
 private:
-    Player player_white;
-    Player player_black;
-    Board board;
-    bool white_king_move;
-    bool black_king_move;
-    E_Result res;
-
-public:
-    enum class E_Result : std::uint8_t {
-        WHITE_WIN,
-        BLACK_WIN,
-        DRAW,
-        UNFINISHED
-    };
+    Board _board;
+    bool _white_king_move;
+    bool _black_king_move;
+    E_Result _res;
 };
 NAMESPACE_DDDELTA_END
 

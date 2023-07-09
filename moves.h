@@ -12,14 +12,15 @@ NAMESPACE_DDDELTA_START
 enum class E_UniqueAction : std::uint8_t {
     ShortCastle,
     LongCastle,
-    WhiteEnPassant,
-    BlackEnPassant
+    EnPassant,
+    Promote,
+    FirstPawnMove
 };
 
 
 struct PossibleMovement {
     std::vector<BoardCoor> moves;
-    E_UniqueAction action;
+    E_UniqueAction unique_action;
 };
 
 
@@ -29,6 +30,7 @@ struct RecordedMovement {
     BoardCoor final_co;
     Piece captured;
     BoardCoor captured_at;
+    E_UniqueAction unique_action;
 };
 NAMESPACE_DDDELTA_END
 #endif //DELTAS_CHESS_MOVES_H
