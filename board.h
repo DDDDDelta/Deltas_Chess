@@ -16,8 +16,23 @@ using ChessBoard = std::array<std::array<Piece, 8>, 8>;
 class Board {
 public:
     Board();
-    [[nodiscard]] Piece& get_piece(BoardCoor co);
-    [[nodiscard]] const ChessBoard& get_board() const;
+
+    [[nodiscard]] inline
+    Piece& get_piece(BoardCoor co)
+        { return this->_board[co.x - 1][co.y - 1]; }
+
+    [[nodiscard]] inline
+    const Piece& get_piece(BoardCoor co) const
+        { return this->_board[co.x - 1][co.y - 1]; }
+
+    [[nodiscard]] inline
+    ChessBoard& get_board()
+        { return this->_board; }
+
+    [[nodiscard]] inline
+    const ChessBoard& get_board() const
+        { return this->_board; }
+
     void set_up();
     void reset();
 
@@ -26,8 +41,7 @@ private:
     std::vector<Piece> _captured_white;
     std::vector<Piece> _captured_black;
     std::uint16_t _white_lost_val;
-    std::uint16_t _black_lost_val;
-
+    std::uint16_t _black_lost_val
 };
 NAMESPACE_DDDELTA_END
 #endif //DELTAS_CHESS_BOARD_H

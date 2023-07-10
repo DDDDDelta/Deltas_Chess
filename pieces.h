@@ -43,7 +43,10 @@ enum class E_PieceType : char {
 struct Piece {
     E_Color color;
     E_PieceType type;
+    bool operator ==(const Piece&) const = default;
 };
+
+
 
 
 constexpr Piece WhiteKing = {E_Color::White, E_PieceType::King };

@@ -23,6 +23,7 @@ enum class E_GameStatus : std::uint8_t {
     ENDED
 };
 
+
 class ChessGame {
 public:
     ChessGame(Player&& pwhite, Player&& pblack);
@@ -40,15 +41,19 @@ public:
 
     // information from frontend
     std::unique_ptr<PossibleMovement> select_piece(BoardCoor co) const;
-
+    bool execute_move(BoardCoor co);
 
 private:
+    PossibleMovement* _WhitePawn_possible_movement(BoardCoor co) const;
+    PossibleMovement* _BlackPawn_possible_movement(BoardCoor co) const;
+
     bool _at_selection;
+    bool _in_check;
+    E_Color _turn;
     Board _board;
     bool _white_king_move;
     bool _black_king_move;
     E_Result _res;
-
 };
 NAMESPACE_DDDELTA_END
 #endif //DELTAS_CHESS_CHESS_GAME_H

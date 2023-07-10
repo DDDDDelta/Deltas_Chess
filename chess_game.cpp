@@ -2,9 +2,29 @@
 #include "code_utils.h"
 
 NAMESPACE_DDDELTA_START
-
 ChessGame::ChessGame(Player&& pwhite, Player&& pblack) :
-    player_white(pwhite), player_black(pblack), _at_selection(false), _board(),
-    _white_king_move(false), _black_king_move(false), _res(E_Result::UNFINISHED) {}
+    player_white(pwhite), player_black(pblack), _at_selection(false),_in_check(false), _board(),
+    _white_king_move(false), _black_king_move(false), _res(E_Result::UNFINISHED), _turn(E_Color::White) {}
+
+std::unique_ptr<PossibleMovement> ChessGame::select_piece(BoardCoor co) const {
+    Piece selected = this->_board.get_piece(co);
+
+    if (selected == Empty)
+        return nullptr;
+
+    if (selected.color != this->_turn)
+        return nullptr;
+
+    switch (selected.type)
+        case E_PieceType::Pawn:
+            return
+                selected.color == E_Color::White ?
+                std::unique_ptr<PossibleMovement>(this->_WhitePawn_possible_movement(co)) :
+                std::unique_ptr<PossibleMovement>(this->_BlackPawn_possible_movement(co));
+        case E_PieceType::Knight:
+            return this->_Knight_possible_movement(co);
+
+
+}
 
 NAMESPACE_DDDELTA_END

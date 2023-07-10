@@ -7,14 +7,6 @@ Board::Board() :
     this->set_up();
 }
 
-Piece& Board::get_piece(const BoardCoor co) {
-    return this->_board[co.x - 1][co.y - 1];
-}
-
-const Board::ChessBoard& Board::get_board() const {
-    return this->_board;
-}
-
 void Board::set_up() {
     this->get_piece({ 1, 1 }) = WhiteRook;
     this->get_piece({ 2, 1 }) = WhiteKnight;
