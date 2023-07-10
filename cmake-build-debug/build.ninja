@@ -79,8 +79,8 @@ build CMakeFiles/Deltas_Chess.dir/moves.cpp.obj: CXX_COMPILER__Deltas_Chess_Debu
   OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
   OBJECT_FILE_DIR = CMakeFiles\Deltas_Chess.dir
 
-build CMakeFiles/Deltas_Chess.dir/gmae_record.cpp.obj: CXX_COMPILER__Deltas_Chess_Debug F$:/project/Deltas-Chess/gmae_record.cpp || cmake_object_order_depends_target_Deltas_Chess
-  DEP_FILE = CMakeFiles\Deltas_Chess.dir\gmae_record.cpp.obj.d
+build CMakeFiles/Deltas_Chess.dir/game_record.cpp.obj: CXX_COMPILER__Deltas_Chess_Debug F$:/project/Deltas-Chess/game_record.cpp || cmake_object_order_depends_target_Deltas_Chess
+  DEP_FILE = CMakeFiles\Deltas_Chess.dir\game_record.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++20
   OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
   OBJECT_FILE_DIR = CMakeFiles\Deltas_Chess.dir
@@ -93,7 +93,7 @@ build CMakeFiles/Deltas_Chess.dir/gmae_record.cpp.obj: CXX_COMPILER__Deltas_Ches
 #############################################
 # Link the executable Deltas_Chess.exe
 
-build Deltas_Chess.exe: CXX_EXECUTABLE_LINKER__Deltas_Chess_Debug CMakeFiles/Deltas_Chess.dir/main.cpp.obj CMakeFiles/Deltas_Chess.dir/chess_game.cpp.obj CMakeFiles/Deltas_Chess.dir/board.cpp.obj CMakeFiles/Deltas_Chess.dir/pieces.cpp.obj CMakeFiles/Deltas_Chess.dir/moves.cpp.obj CMakeFiles/Deltas_Chess.dir/gmae_record.cpp.obj
+build Deltas_Chess.exe: CXX_EXECUTABLE_LINKER__Deltas_Chess_Debug CMakeFiles/Deltas_Chess.dir/main.cpp.obj CMakeFiles/Deltas_Chess.dir/chess_game.cpp.obj CMakeFiles/Deltas_Chess.dir/board.cpp.obj CMakeFiles/Deltas_Chess.dir/pieces.cpp.obj CMakeFiles/Deltas_Chess.dir/moves.cpp.obj CMakeFiles/Deltas_Chess.dir/game_record.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
