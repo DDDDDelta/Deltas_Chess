@@ -56,6 +56,7 @@ void GUI::board_init(DDDelta::ChessGame chess_game) {
     image_map[DDDelta::BlackQueen] = IMG_Load("../imgs/bQ.png");
     image_map[DDDelta::BlackKing] = IMG_Load("../imgs/bK.png");
 
+
     bool is_white = true;
     for (std::uint8_t j = 1; j <= 8; j++) {
         for (std::uint8_t i = 1; i <= 8; i++) {
