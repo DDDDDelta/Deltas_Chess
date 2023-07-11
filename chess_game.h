@@ -26,16 +26,23 @@ enum class E_GameStatus : std::uint8_t {
 
 class ChessGame {
 public:
+
     ChessGame(Player&& pwhite, Player&& pblack);
     ChessGame(GameRecord&& record);
 
-    // information for frontend
+    // render this!
     [[nodiscard]] inline
     E_Result get_result() const
         { return this->_res; }
+
     [[nodiscard]] inline
-    const ChessBoard& get_board() const
-        { return this->_board.get_board(); }
+    const Piece& get_piece(std::uint8_t x, std::uint8_t y) const
+        { return this->_board.get_piece(x, y); }
+
+    [[nodiscard]] inline
+    const Piece& get_piece(BoardCoor co) const
+        { return this->_board.get_piece(co); }
+
     const Player player_white;
     const Player player_black;
 
@@ -44,16 +51,15 @@ public:
     bool execute_move(BoardCoor co);
 
 private:
-    PossibleMovement* _WhitePawn_possible_movement(BoardCoor co) const;
-    PossibleMovement* _BlackPawn_possible_movement(BoardCoor co) const;
 
     bool _at_selection;
     bool _in_check;
     E_Color _turn;
-    Board _board;
     bool _white_king_move;
     bool _black_king_move;
     E_Result _res;
+    Board _board;
+
 };
 NAMESPACE_DDDELTA_END
 #endif //DELTAS_CHESS_CHESS_GAME_H

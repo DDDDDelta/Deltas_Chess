@@ -6,10 +6,13 @@
 #include <array>
 #include <vector>
 #include <cstdint>
-#include "pieces.h"
+
 #include "code_utils.h"
+#include "pieces.h"
+#include "moves.h"
 
 NAMESPACE_DDDELTA_START
+using MovementMap = std::array<std::array<PossibleMovement, 8>, 8>;
 using ChessBoard = std::array<std::array<Piece, 8>, 8>;
 
 
@@ -22,8 +25,16 @@ public:
         { return this->_board[co.x - 1][co.y - 1]; }
 
     [[nodiscard]] inline
+    Piece& get_piece(std::uint8_t x, std::uint8_t y)
+        { return this->_board[x - 1][y - 1]; }
+
+    [[nodiscard]] inline
     const Piece& get_piece(BoardCoor co) const
         { return this->_board[co.x - 1][co.y - 1]; }
+
+    [[nodiscard]] inline
+    const Piece& get_piece(std::uint8_t x, std::uint8_t y) const
+        { return this->_board[x - 1][y - 1]; }
 
     [[nodiscard]] inline
     ChessBoard& get_board()
@@ -41,7 +52,8 @@ private:
     std::vector<Piece> _captured_white;
     std::vector<Piece> _captured_black;
     std::uint16_t _white_lost_val;
-    std::uint16_t _black_lost_val
+    std::uint16_t _black_lost_val;
+    MovementMap _movement_map;
 };
 NAMESPACE_DDDELTA_END
 #endif //DELTAS_CHESS_BOARD_H
