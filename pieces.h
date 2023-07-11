@@ -50,23 +50,6 @@ struct Piece {
     bool operator ==(const Piece&) const = default;
 };
 
-
-
-
-constexpr Piece WhiteKing = {E_Color::White, E_PieceType::King };
-constexpr Piece WhiteQueen = {E_Color::White, E_PieceType::Queen };
-constexpr Piece WhiteRook = {E_Color::White, E_PieceType::Rook };
-constexpr Piece WhiteBishop = {E_Color::White, E_PieceType::Bishop };
-constexpr Piece WhiteKnight = {E_Color::White, E_PieceType::Knight };
-constexpr Piece WhitePawn = {E_Color::White, E_PieceType::Pawn };
-constexpr Piece BlackKing = {E_Color::Black, E_PieceType::King };
-constexpr Piece BlackQueen = {E_Color::Black, E_PieceType::Queen };
-constexpr Piece BlackRook = {E_Color::Black, E_PieceType::Rook };
-constexpr Piece BlackBishop = {E_Color::Black, E_PieceType::Bishop };
-constexpr Piece BlackKnight = {E_Color::Black, E_PieceType::Knight };
-constexpr Piece BlackPawn = {E_Color::Black, E_PieceType::Pawn };
-constexpr Piece Empty = {E_Color::Neither, E_PieceType::Empty };
-
 auto operator <=>(const Piece& lhs, const Piece& rhs) {
     if (lhs.color != rhs.color)
         return lhs.color <=> rhs.color;
@@ -74,7 +57,19 @@ auto operator <=>(const Piece& lhs, const Piece& rhs) {
         return lhs.type <=> rhs.type;
 }
 
-
+constexpr Piece WhiteKing = { E_Color::White, E_PieceType::King };
+constexpr Piece WhiteQueen = { E_Color::White, E_PieceType::Queen };
+constexpr Piece WhiteRook = { E_Color::White, E_PieceType::Rook };
+constexpr Piece WhiteBishop = { E_Color::White, E_PieceType::Bishop };
+constexpr Piece WhiteKnight = { E_Color::White, E_PieceType::Knight };
+constexpr Piece WhitePawn = { E_Color::White, E_PieceType::Pawn };
+constexpr Piece BlackKing = { E_Color::Black, E_PieceType::King };
+constexpr Piece BlackQueen = { E_Color::Black, E_PieceType::Queen };
+constexpr Piece BlackRook = { E_Color::Black, E_PieceType::Rook };
+constexpr Piece BlackBishop = { E_Color::Black, E_PieceType::Bishop };
+constexpr Piece BlackKnight = { E_Color::Black, E_PieceType::Knight };
+constexpr Piece BlackPawn = { E_Color::Black, E_PieceType::Pawn };
+constexpr Piece Empty = { E_Color::Neither, E_PieceType::Empty };
 NAMESPACE_DDDELTA_END
 #endif //DELTAS_CHESS_PIECES_H
 

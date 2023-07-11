@@ -51,8 +51,6 @@ public:
     bool execute_move(BoardCoor co);
 
 private:
-
-    bool _at_selection;
     bool _in_check;
     E_Color _turn;
     bool _white_king_move;
