@@ -90,4 +90,3 @@ void GUI::board_init(DDDelta::ChessGame chess_game) {
 }
 
 NAMESPACE_BOBZHENG00_END
-
