@@ -3,7 +3,7 @@
 
 NAMESPACE_DDDELTA_START
 Board::Board() :
-    _board{}, _black_lost_val(0), _white_lost_val(0) {
+    _up_board(std::make_unique<ChessBoard>()),_up_movement_map(std::make_unique<MovementMap>()), _black_lost_val(0), _white_lost_val(0) {
     this->set_up();
 }
 
@@ -25,14 +25,14 @@ void Board::set_up() {
     this->get_piece({ 7, 8 }) = BlackKnight;
     this->get_piece({ 8, 8 }) = BlackRook;
 
-    for (std::uint8_t i = 1; i <= 8; i++) {
-        this->get_piece({ i, 2 }) = WhitePawn;
-        this->get_piece({ i, 7 }) = BlackPawn;
+    for (std::uint8_t i : std::views::iota(1, 9)) {
+        this->get_piece(i, 2 ) = WhitePawn;
+        this->get_piece(i, 7) = BlackPawn;
     }
 
-    for (std::uint8_t i = 1; i <= 8; i++)
-        for (std::uint8_t j = 3; j <= 6; j++)
-            this->get_piece({ i, j }) = Empty;
+    for (std::uint8_t i : stdvw::iota(1,9))
+        for (std::uint8_t j : stdvw::iota(3, 7))
+            this->get_piece(i, j) = Empty;
 }
 
 void Board::reset() {
@@ -41,6 +41,15 @@ void Board::reset() {
     this->_black_lost_val = 0;
     this->_captured_white.clear();
     this->_captured_white.clear();
+}
+
+PossibleMovement Board::_pawn_move(BoardCoor co) const {
+    PossibleMovement
+    if (this->get_piece(co).color == E_Color::White) {
+        if (co + { 0, 1 })
+    }
+
+    return std::move(ret);
 }
 
 NAMESPACE_DDDELTA_END

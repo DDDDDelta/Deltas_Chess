@@ -1,5 +1,4 @@
 #pragma once
-
 #ifndef DELTAS_CHESS_CODE_UTILS_H
 #define DELTAS_CHESS_CODE_UTILS_H
 
@@ -16,5 +15,7 @@
 #define STDARRAY_GET(arr, x) (arr[x])
 #endif // DDDELTA_SETTING_DEBUG
 
+namespace stdchr = std::chrono;
+namespace stdvw = std::views;
 
 #endif // DELTAS_CHESS_CODE_UTILS_H

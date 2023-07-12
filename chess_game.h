@@ -57,7 +57,6 @@ private:
     bool _black_king_move;
     E_Result _res;
     Board _board;
-
 };
 NAMESPACE_DDDELTA_END
 #endif //DELTAS_CHESS_CHESS_GAME_H

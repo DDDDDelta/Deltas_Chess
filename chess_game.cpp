@@ -15,16 +15,7 @@ std::unique_ptr<PossibleMovement> ChessGame::select_piece(BoardCoor co) const {
     if (selected.color != this->_turn)
         return nullptr;
 
-    switch (selected.type)
-        case E_PieceType::Pawn:
-            return
-                selected.color == E_Color::White ?
-                std::unique_ptr<PossibleMovement>(this->_WhitePawn_possible_movement(co)) :
-                std::unique_ptr<PossibleMovement>(this->_BlackPawn_possible_movement(co));
-        case E_PieceType::Knight:
-            return this->_Knight_possible_movement(co);
-
-
+    return this->_board.
 }
 
 NAMESPACE_DDDELTA_END
