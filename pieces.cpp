@@ -17,6 +17,7 @@ BoardCoor BoardCoor::operator +(BoardCoor rhs) const {
              static_cast<std::int8_t> (this->y + rhs.y) };
 }
 
+
 BoardCoor BoardCoor::operator -(BoardCoor rhs) const {
     return { static_cast<std::int8_t> (this->x - rhs.x),
              static_cast<std::int8_t> (this->y - rhs.y) };

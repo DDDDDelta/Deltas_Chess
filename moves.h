@@ -10,18 +10,21 @@
 
 NAMESPACE_DDDELTA_START
 enum class E_UniqueAction : std::uint8_t {
-    None = 0,
+    None,
     ShortCastle,
     LongCastle,
     EnPassant,
-    Promote,
-    FirstPawnMove
+    Promote
 };
 
+struct UniqueAction {
+    BoardCoor coor;
+    E_UniqueAction type;
+};
 
 struct PossibleMovement {
     std::vector<BoardCoor> moves;
-    E_UniqueAction action;
+    UniqueAction action;
 };
 
 

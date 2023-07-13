@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <memory>
 #include <ranges>
+#include <algorithm>
 
 #include "code_utils.h"
 #include "pieces.h"

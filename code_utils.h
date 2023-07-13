@@ -17,5 +17,6 @@
 
 namespace stdchr = std::chrono;
 namespace stdvw = std::views;
+namespace stdrng = std::ranges;
 
 #endif // DELTAS_CHESS_CODE_UTILS_H

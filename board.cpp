@@ -44,12 +44,29 @@ void Board::reset() {
 }
 
 PossibleMovement Board::_pawn_move(BoardCoor co) const {
-    PossibleMovement
-    if (this->get_piece(co).color == E_Color::White) {
-        if (co + { 0, 1 })
-    }
+    std::vector<BoardCoor> sqrs;
+    Piece curr = this->get_piece(co);
+    BoardCoor new_co;
 
-    return std::move(ret);
+    new_co = co + BoardCoor(0, curr.color == E_Color::White ? 1 : -1);
+    if (new_co.on_board() && this->get_piece(new_co) == Empty)
+        sqrs.push_back(new_co);
+
+    new_co = co + BoardCoor(1, curr.color == E_Color::White ? 1 : -1);
+    if (new_co.on_board() && this->get_piece(new_co).color == ~curr.color)
+        sqrs.push_back(new_co);
+
+    new_co = co + BoardCoor(-1, curr.color == E_Color::White ? 1 : -1);
+    if (new_co.on_board() && this->get_piece(new_co).color == ~curr.color)
+        sqrs.push_back(new_co);
+
+    new_co = co + BoardCoor(0, curr.color == E_Color::White ? 2 : -2);
+    if (co.x == (curr.color == E_Color::White ? 2 : 7) &&
+        this->get_piece(new_co) == Empty &&
+        this->get_piece(co + BoardCoor(0, curr.color == E_Color::White ? 1 : -1)) == Empty)
+        sqrs.push_back(new_co);
+
+
 }
 
 NAMESPACE_DDDELTA_END
