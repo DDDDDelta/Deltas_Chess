@@ -17,16 +17,18 @@ enum class E_UniqueAction : std::uint8_t {
     Promote
 };
 
-struct UniqueAction {
+
+struct PieceMove {
     BoardCoor coor;
-    E_UniqueAction type;
+    E_UniqueAction unique_action;
 };
+
 
 struct PossibleMovement {
-    std::vector<BoardCoor> moves;
-    UniqueAction action;
+    std::vector<PieceMove> moves;
+    std::vector<PieceMove> captures;
+    std::vector<PieceMove> protects;
 };
-
 
 struct RecordedMovement {
     Piece moved;

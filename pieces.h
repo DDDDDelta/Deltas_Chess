@@ -62,8 +62,8 @@ struct Piece {
     E_Color color;
     E_PieceType type;
 
-    inline
     bool operator ==(const Piece&) const = default;
+    inline explicit operator bool() const;
 };
 
 auto operator <=>(const Piece& lhs, const Piece& rhs);
