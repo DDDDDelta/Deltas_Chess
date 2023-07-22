@@ -1,5 +1,4 @@
 #pragma once
-#ifndef DELTAS_CHESS_CHESS_GAME_H
 #define DELTAS_CHESS_CHESS_GAME_H
 
 #include <vector>
@@ -7,6 +6,7 @@
 #include <utility>
 #include <tuple>
 #include <memory>
+#include <optional>
 
 #include "pieces.h"
 #include "player.h"
@@ -26,7 +26,6 @@ enum class E_GameStatus : std::uint8_t {
 
 class ChessGame {
 public:
-
     ChessGame(Player&& pwhite, Player&& pblack);
     ChessGame(GameRecord&& record);
 
@@ -43,20 +42,22 @@ public:
     const Piece& get_piece(BoardCoor co) const
         { return this->_board.get_piece(co); }
 
+    [[nodiscard]] inline
+    std::optional<BoardCoor> get_selection() const
+        { return this->_selected; }
+
     const Player player_white;
     const Player player_black;
 
     // information from frontend
-    std::unique_ptr<PossibleMovement> select_piece(BoardCoor co) const;
+    PossibleMovement* select_piece(BoardCoor co) const;
     bool execute_move(BoardCoor co);
 
 private:
     bool _in_check;
     E_Color _turn;
-    bool _white_king_move;
-    bool _black_king_move;
+    std::optional<BoardCoor> _selected;
     E_Result _res;
     Board _board;
 };
 NAMESPACE_DDDELTA_END
-#endif //DELTAS_CHESS_CHESS_GAME_H

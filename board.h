@@ -1,5 +1,4 @@
 #pragma once
-#ifndef DELTAS_CHESS_BOARD_H
 #define DELTAS_CHESS_BOARD_H
 
 #include <tuple>
@@ -15,8 +14,13 @@
 #include "moves.h"
 
 NAMESPACE_DDDELTA_START
-using MovementMap_t = std::array<std::array<std::unique_ptr<PossibleMovement>, 8>, 8>;
-using ChessBoard_t = std::array<std::array<Piece, 8>, 8>;
+struct PieceWithMove {
+    std::optional<PossibleMovement> opt_movement;
+    Piece piece;
+};
+
+
+using ChessBoard_t = std::array<std::array<PieceWithMove, 8>, 8>;
 
 
 class Board {
@@ -25,27 +29,19 @@ public:
 
     [[nodiscard]] inline
     Piece& get_piece(BoardCoor co)
-        { return this->_board[co.x - 1][co.y - 1]; }
+        { return this->_board[co.x - 1][co.y - 1].piece; }
 
     [[nodiscard]] inline
     Piece& get_piece(std::uint8_t x, std::uint8_t y)
-        { return this->_board[x - 1][y - 1]; }
+        { return this->_board[x - 1][y - 1].piece; }
 
     [[nodiscard]] inline
     const Piece& get_piece(BoardCoor co) const
-        { return this->_board[co.x - 1][co.y - 1]; }
+        { return this->_board[co.x - 1][co.y - 1].piece; }
 
     [[nodiscard]] inline
     const Piece& get_piece(std::uint8_t x, std::uint8_t y) const
-        { return this->_board[x - 1][y - 1]; }
-
-    [[nodiscard]] inline
-    const PossibleMovement* get_move(BoardCoor co) const
-        { return this->_movement_map[co.x - 1][co.y - 1].get(); }
-
-    [[nodiscard]] inline
-    const PossibleMovement* get_move(std::uint8_t x, std::uint8_t y) const
-        { return this->_movement_map[x - 1][y - 1].get(); }
+        { return this->_board[x - 1][y - 1].piece; }
 
     [[nodiscard]] inline
     ChessBoard_t& get_board()
@@ -68,11 +64,9 @@ private:
 
 
     ChessBoard_t _board;
-    MovementMap_t _movement_map;
     std::vector<Piece> _captured_white;
     std::vector<Piece> _captured_black;
     std::uint16_t _white_lost_val;
     std::uint16_t _black_lost_val;
 };
 NAMESPACE_DDDELTA_END
-#endif //DELTAS_CHESS_BOARD_H

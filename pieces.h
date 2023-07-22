@@ -35,7 +35,6 @@ struct BoardCoor {
 using Vec2 = BoardCoor;
 
 
-
 constexpr BoardCoor INVALID_COOR { 0 , 0 };
 
 
