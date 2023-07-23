@@ -26,25 +26,19 @@ enum class E_GameStatus : std::uint8_t {
 
 class ChessGame {
 public:
-    ChessGame(Player&& pwhite, Player&& pblack);
-    ChessGame(GameRecord&& record);
+    ChessGame(Player &&pwhite, Player &&pblack);
+
+    ChessGame(GameRecord &&record);
 
     // render this!
     [[nodiscard]] inline
-    E_Result get_result() const
-        { return this->_res; }
-
+    E_Result get_result() const { return this->_res; }
     [[nodiscard]] inline
-    const Piece& get_piece(std::uint8_t x, std::uint8_t y) const
-        { return this->_board.get_piece(x, y); }
-
+    const Piece &get_piece(std::uint8_t x, std::uint8_t y) const { return this->_board.get_piece(x, y); }
     [[nodiscard]] inline
-    const Piece& get_piece(BoardCoor co) const
-        { return this->_board.get_piece(co); }
-
+    const Piece &get_piece(BoardCoor co) const { return this->_board.get_piece(co); }
     [[nodiscard]] inline
-    std::optional<BoardCoor> get_selection() const
-        { return this->_selected; }
+    std::optional<BoardCoor> get_selection() const { return this->_selected; }
 
     const Player player_white;
     const Player player_black;

@@ -55,18 +55,19 @@ public:
     void reset();
 
 private:
-    PossibleMovement* _pawn_move(BoardCoor co) const;
-    PossibleMovement* _knight_move(BoardCoor co) const;
-    PossibleMovement* _bishop_move(BoardCoor co) const;
-    PossibleMovement* _rook_move(BoardCoor co) const;
-    PossibleMovement* _queen_move(BoardCoor co) const;
-    PossibleMovement* _king_move(BoardCoor co) const;
-
-
     ChessBoard_t _board;
     std::vector<Piece> _captured_white;
     std::vector<Piece> _captured_black;
     std::uint16_t _white_lost_val;
     std::uint16_t _black_lost_val;
+
+private:
+    PossibleMovement _pawn_move(BoardCoor co) const;
+    PossibleMovement _knight_move(BoardCoor co) const;
+    PossibleMovement _bishop_move(BoardCoor co) const;
+    PossibleMovement _rook_move(BoardCoor co) const;
+    PossibleMovement _queen_move(BoardCoor co) const;
+    PossibleMovement _king_move(BoardCoor co) const;
+
 };
 NAMESPACE_DDDELTA_END

@@ -43,7 +43,7 @@ void Board::reset() {
     this->_captured_white.clear();
 }
 
-PossibleMovement* Board::_pawn_move(BoardCoor co) const {
+PossibleMovement Board::_pawn_move(BoardCoor co) const {
     std::vector<PieceMove> moves;
     std::vector<PieceMove> captures;
     std::vector<PieceMove> protects;
@@ -89,7 +89,7 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
         !this->get_piece(co + BoardCoor(0, curr.color == E_Color::White ? 1 : -1)))
         moves.emplace_back(new_co, E_UniqueAction::None);
 
-    return new PossibleMovement { std::move(moves), std::move(captures), std::move(protects) };
+    return { std::move(moves), std::move(captures), std::move(protects) };
 }
 
 
@@ -112,22 +112,15 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
  *                             | no pieces moves to: no moves includes the square
  */
 
-PossibleMovement* Board::_king_move(BoardCoor co) const {
+PossibleMovement Board::_king_move(BoardCoor co) const {
     using BC = BoardCoor;
+
     Piece curr = this->get_piece(co);
     auto move_list = {
             co + BC(1, 0),  co + BC(1, 1),  co + BC(1,-1),
             co + BC(0, 1),                         co + BC(0, -1),
             co + BC(-1, 0), co + BC(-1, 1), co + BC(-1,-1)
     };
-
-    /*
-    std::vector<std::vector<PieceMove>*> under_attack_p;
-    for (int i : stdvw::iota(0,8))
-        for (int j : stdvw::iota(0,8))
-            if (!this->_board[i][j] && this->_board[i][j].color == ~curr.color)
-                under_attack_p.push_back(&this->_movement_map[i][j]->captures);
-    */
 
     auto possible_moves = move_list | stdvw::filter([this, curr](BC coor) {
         return coor.on_board() && this->get_piece(coor).color != curr.color;
@@ -136,6 +129,14 @@ PossibleMovement* Board::_king_move(BoardCoor co) const {
     auto opponent_pieces = this->_board
             | stdvw::join
             | stdvw::filter([curr](auto& pnm) { return pnm.piece.color == ~curr.color; });
+
+    auto to_piecemove = stdvw::transform([](BC coor) -> PieceMove {
+        return { coor, E_UniqueAction::None };
+    });
+
+    auto protects_range = move_list | stdvw::filter([this, curr](BC coor) {
+        return coor.on_board() && this->get_piece(coor).color == curr.color;
+    }) | to_piecemove;
 
     auto captures_range = possible_moves
             | stdvw::filter([this, curr](BC coor) {
@@ -152,9 +153,10 @@ PossibleMovement* Board::_king_move(BoardCoor co) const {
                         return protecting.coor == coor;
                     });
                 });
-            });
+            })
+            | to_piecemove;
 
-    auto move_range = possible_moves
+    auto moves_range = possible_moves
             | stdvw::filter([this](BC curr) {
                 return !this->get_piece(curr);
             })
@@ -164,16 +166,33 @@ PossibleMovement* Board::_king_move(BoardCoor co) const {
                     if (curr.color == E_Color::Black) {
                         BC top_left = coor + Vec2(-1, 1);
                         BC top_right = coor + Vec2(1, 1);
-                            this->get_piece(coor + BC(1, 1)) == WhitePawn ||
-                            this->get_piece(coor + BC(-1, 1)) == WhitePawn;
+                        attacked_by_pawn =
+                                top_left.on_board() ? false : this->get_piece(top_left) == WhitePawn ||
+                                top_right.on_board() ? false : this->get_piece(top_left) == WhitePawn;
+                        // never call get_piece when !on_board()
                     } else {
-
+                        BC bottom_left = coor + Vec2(-1, -1);
+                        BC bottom_right = coor + Vec2(1, -1);
+                        attacked_by_pawn =
+                                !bottom_left.on_board() ? false : this->get_piece(bottom_left) == WhitePawn ||
+                                !bottom_right.on_board() ? false : this->get_piece(bottom_left) == WhitePawn;
+                        // same as above
                     }
-                    return stdrng::none_of(pwm.opt_movement->moves, [this, &pwm](PieceMove pmove) {
-                        return this->get_piece(pmove.coor) == pwm.piece;
-                    });
+                    return !attacked_by_pawn &&
+                            stdrng::none_of(pwm.opt_movement->moves, [coor](PieceMove moving) {
+                                return moving.coor == coor;
+                            });
                 });
-            });
+            })
+            | to_piecemove;
+
+    return { { moves_range.begin(), moves_range.end() },
+             { captures_range.begin(), captures_range.end() },
+             { protects_range.begin(), protects_range.end() }};
+}
+
+PossibleMovement Board::_knight_move(BoardCoor co) const {
+
 }
 
 NAMESPACE_DDDELTA_END
