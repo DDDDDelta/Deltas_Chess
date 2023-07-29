@@ -42,7 +42,7 @@ E_Color operator ~(E_Color color) {
         return color;
 }
 
-Piece::operator bool() const { return *this == Empty; }
+Piece::operator bool() const { return *this == constant::Empty; }
 
 auto operator <=>(const Piece& lhs, const Piece& rhs) {
     if (lhs.color != rhs.color)

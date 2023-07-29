@@ -44,6 +44,10 @@ public:
     const std::optional<PossibleMovement>& get_move(std::uint8_t x, std::uint8_t y) const {
         return this->_board[x - 1][y - 1].opt_movement;
     }
+    inline
+    const std::optional<PossibleMovement>& get_move(BoardCoor co) const {
+        return this->_board[co.x - 1][co.y - 1].opt_movement;
+    }
 
     void set_up();
     void reset();

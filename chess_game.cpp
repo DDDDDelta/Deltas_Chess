@@ -7,7 +7,7 @@ ChessGame::ChessGame(Player&& pwhite, Player&& pblack) :
     _res(E_Result::UNFINISHED), _turn(E_Color::White) {}
 
 
-const std::optional<PossibleMovement>& ChessGame::select_piece(BoardCoor co) const {
+std::optional<PossibleMovement> ChessGame::select_piece(BoardCoor co) const {
     Piece selected = this->_board.get_piece(co);
 
     return this->_board.get_move(co);

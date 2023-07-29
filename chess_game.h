@@ -52,7 +52,7 @@ public:
     const Player player_black;
 
     // information from frontend
-    const std::optional<PossibleMovement>& select_piece(BoardCoor co) const;
+    std::optional<PossibleMovement> select_piece(BoardCoor co) const;
     std::optional<E_UniqueAction> execute_move(BoardCoor co) noexcept(false);
 
 private:
