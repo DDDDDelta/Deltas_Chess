@@ -26,9 +26,9 @@ enum class E_GameStatus : std::uint8_t {
 
 class ChessGame {
 public:
-    ChessGame(Player &&pwhite, Player &&pblack);
+    ChessGame(Player&& pwhite, Player&& pblack);
 
-    ChessGame(GameRecord &&record);
+    ChessGame(GameRecord &&record); // TODO: constructor from GameRecord
 
     // render this!
     [[nodiscard]] inline
@@ -45,10 +45,9 @@ public:
 
     // information from frontend
     PossibleMovement* select_piece(BoardCoor co) const;
-    bool execute_move(BoardCoor co);
+    std::optional<E_UniqueAction> execute_move(BoardCoor co);
 
 private:
-    bool _in_check;
     E_Color _turn;
     std::optional<BoardCoor> _selected;
     E_Result _res;

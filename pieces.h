@@ -1,5 +1,4 @@
 #pragma once
-#ifndef DELTAS_CHESS_PIECES_H
 #define DELTAS_CHESS_PIECES_H
 
 #include <cstddef>
@@ -30,6 +29,8 @@ struct BoardCoor {
 
     inline
     BoardCoor operator -(BoardCoor rhs) const;
+
+    BoardCoor& operator +=(BoardCoor rhs);
 };
 
 using Vec2 = BoardCoor;
@@ -81,5 +82,4 @@ constexpr Piece BlackKnight = { E_Color::Black, E_PieceType::Knight };
 constexpr Piece BlackPawn = { E_Color::Black, E_PieceType::Pawn };
 constexpr Piece Empty = { E_Color::Neither, E_PieceType::Empty };
 NAMESPACE_DDDELTA_END
-#endif //DELTAS_CHESS_PIECES_H
 

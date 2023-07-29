@@ -1,5 +1,4 @@
 #pragma once
-#ifndef DELTAS_CHESS_CODE_UTILS_H
 #define DELTAS_CHESS_CODE_UTILS_H
 
 #define NAMESPACE_DDDELTA_START namespace DDDelta {
@@ -18,5 +17,3 @@
 namespace stdchr = std::chrono;
 namespace stdvw = std::views;
 namespace stdrng = std::ranges;
-
-#endif // DELTAS_CHESS_CODE_UTILS_H

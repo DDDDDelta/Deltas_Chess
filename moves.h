@@ -1,5 +1,4 @@
 #pragma once
-#ifndef DELTAS_CHESS_MOVES_H
 #define DELTAS_CHESS_MOVES_H
 
 #include <vector>
@@ -39,4 +38,3 @@ struct RecordedMovement {
     E_UniqueAction unique_action;
 };
 NAMESPACE_DDDELTA_END
-#endif //DELTAS_CHESS_MOVES_H
