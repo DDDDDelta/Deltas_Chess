@@ -22,6 +22,7 @@ struct PieceWithMove {
 
 using ChessBoard_t = std::array<std::array<PieceWithMove, 8>, 8>;
 
+class ChessGame;
 
 class Board {
 public:
@@ -29,21 +30,20 @@ public:
 
     inline
     Piece& get_piece(BoardCoor co) { return this->_board[co.x - 1][co.y - 1].piece; }
-
     inline
     Piece& get_piece(std::uint8_t x, std::uint8_t y) { return this->_board[x - 1][y - 1].piece; }
-
     inline
     const Piece& get_piece(BoardCoor co) const { return this->_board[co.x - 1][co.y - 1].piece; }
-
     inline
     const Piece& get_piece(std::uint8_t x, std::uint8_t y) const { return this->_board[x - 1][y - 1].piece; }
-
     inline
     ChessBoard_t& get_board() { return this->_board; }
-
     inline
     const ChessBoard_t& get_board() const { return this->_board; }
+    inline
+    const std::optional<PossibleMovement>& get_move(std::uint8_t x, std::uint8_t y) const {
+        return this->_board[x - 1][y - 1].opt_movement;
+    }
 
     void set_up();
     void reset();

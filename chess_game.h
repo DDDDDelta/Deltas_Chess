@@ -23,6 +23,9 @@ enum class E_GameStatus : std::uint8_t {
     ENDED
 };
 
+namespace throwable {
+    class pawn_promote;
+}
 
 class ChessGame {
 public:
@@ -38,19 +41,44 @@ public:
     [[nodiscard]] inline
     const Piece &get_piece(BoardCoor co) const { return this->_board.get_piece(co); }
     [[nodiscard]] inline
-    std::optional<BoardCoor> get_selection() const { return this->_selected; }
+    std::optional<BoardCoor> get_selection() const {
+        if (this->_selected == constant::INVALID_COOR)
+            return std::nullopt;
+        else
+            return this->_selected;
+    }
 
     const Player player_white;
     const Player player_black;
 
     // information from frontend
-    PossibleMovement* select_piece(BoardCoor co) const;
-    std::optional<E_UniqueAction> execute_move(BoardCoor co);
+    const std::optional<PossibleMovement>& select_piece(BoardCoor co) const;
+    std::optional<E_UniqueAction> execute_move(BoardCoor co) noexcept(false);
 
 private:
     E_Color _turn;
-    std::optional<BoardCoor> _selected;
+    BoardCoor _selected;
     E_Result _res;
     Board _board;
+
+    [[nodiscard]] inline
+    Piece& get_piece(BoardCoor co) { return this->_board.get_piece(co); }
+    [[nodiscard]] inline
+    Piece& get_piece(std::uint8_t x, std::uint8_t y) { return this->_board.get_piece(x, y); }
+
+    friend throwable::pawn_promote;
 };
+
+
+namespace throwable {
+    class pawn_promote {
+    public:
+        pawn_promote(ChessGame* p_game, BoardCoor co);
+        bool select_promotion(E_PieceType type);
+
+    private:
+        ChessGame* _p_game;
+        BoardCoor _co;
+    };
+}
 NAMESPACE_DDDELTA_END
