@@ -1,23 +1,20 @@
 #pragma once
 #define DELTAS_CHESS_PIECES_H
 
-#include <cstddef>
+#include <cstdint>
 #include <string>
 #include <vector>
 #include <compare>
 
-#include "code_utils.h"
+#include "code_utils.inc"
 #include "chess_macros.h"
 
 
 
 NAMESPACE_DDDELTA_START
 struct BoardCoor {
-    std::int8_t x;
-    std::int8_t y;
-
-    [[nodiscard]]
-    bool on_board(std::int8_t delta_x, std::int8_t delta_y) const;
+    i8 x;
+    i8 y;
 
     [[nodiscard]]
     bool on_board() const;
@@ -36,19 +33,13 @@ struct BoardCoor {
 using Vec2 = BoardCoor;
 
 
-enum class E_Color : std::uint8_t {
-    White,
-    Black,
-    Neither
+enum class E_Color : bool {
+    White = true,
+    Black = false
 };
 
 
-inline
-E_Color operator ~(E_Color color);
-
-
-enum class E_PieceType : char {
-    Empty = ' ',
+enum class E_PieceType : u8 {
     Pawn = 'P',
     Knight = 'N',
     Bishop = 'B',
@@ -57,15 +48,16 @@ enum class E_PieceType : char {
     Queen = 'Q'
 };
 
+
 struct Piece {
     E_Color color;
     E_PieceType type;
 
     bool operator ==(const Piece&) const = default;
-    inline explicit operator bool() const;
 };
 
-auto operator <=>(const Piece& lhs, const Piece& rhs);
+
+std::strong_ordering operator <=>(const Piece& lhs, const Piece& rhs);
 
 
 namespace constant {
@@ -82,7 +74,6 @@ namespace constant {
     constexpr Piece BlackBishop = {E_Color::Black, E_PieceType::Bishop};
     constexpr Piece BlackKnight = {E_Color::Black, E_PieceType::Knight};
     constexpr Piece BlackPawn = {E_Color::Black, E_PieceType::Pawn};
-    constexpr Piece Empty = {E_Color::Neither, E_PieceType::Empty};
 }
 NAMESPACE_DDDELTA_END
 

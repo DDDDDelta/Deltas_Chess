@@ -3,7 +3,7 @@
 //
 
 #include <iostream>
-#include "code_utils.h"
+#include "code_utils.inc"
 #include "GUI.h"
 #include "chess_game.h"
 #include "pieces.h"

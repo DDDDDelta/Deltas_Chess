@@ -6,7 +6,7 @@
 #define DELTAS_CHESS_GUI_H
 
 
-#include "code_utils.h"
+#include "code_utils.inc"
 #include "chess_game.h"
 #include "SDL2/include/SDL.h"
 #include "SDL2_ttf/include/SDL_ttf.h"

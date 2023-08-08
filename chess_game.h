@@ -7,6 +7,7 @@
 #include <tuple>
 #include <memory>
 #include <optional>
+#include <cassert>
 
 #include "pieces.h"
 #include "player.h"
@@ -31,8 +32,6 @@ class ChessGame {
 public:
     ChessGame(Player&& pwhite, Player&& pblack);
 
-    ChessGame(GameRecord &&record); // TODO: constructor from GameRecord
-
     // render this!
     [[nodiscard]] inline
     E_Result get_result() const { return this->_res; }
@@ -52,8 +51,8 @@ public:
     const Player player_black;
 
     // information from frontend
-    std::optional<PossibleMovement> select_piece(BoardCoor co) const;
-    std::optional<E_UniqueAction> execute_move(BoardCoor co) noexcept(false);
+    const std::optional<PossibleMovement>& select_piece(BoardCoor co);
+    std::optional<E_UniqueAction> execute_move(BoardCoor target_coor) noexcept(false);
 
 private:
     E_Color _turn;
@@ -72,13 +71,15 @@ private:
 
 namespace throwable {
     class pawn_promote {
+        // friend of ChessGame
     public:
         pawn_promote(ChessGame* p_game, BoardCoor co);
-        bool select_promotion(E_PieceType type);
+        bool select_promotion(BoardCoor selection);
 
     private:
         ChessGame* _p_game;
         BoardCoor _co;
+        BoardCoor _original;
     };
 }
 NAMESPACE_DDDELTA_END

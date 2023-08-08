@@ -1,10 +1,9 @@
 #include "board.h"
-#include "code_utils.h"
+#include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
 Board::Board() :
-        _board {}, _black_lost_val(0), _white_lost_val(0), _in_check(false),
-        _white_king_moved(false), _black_king_moved(false) {
+        _board {}, _in_check(false) {
     this->set_up();
 }
 
@@ -31,19 +30,11 @@ void Board::set_up() {
         this->get_piece(i, 2 ) = constant::WhitePawn;
         this->get_piece(i, 7) = constant::BlackPawn;
     }
-
-    for (std::uint8_t i : stdvw::iota(1,9))
-        for (std::uint8_t j : stdvw::iota(3, 7))
-            this->get_piece(i, j) = constant::Empty;
 }
 
 
 void Board::reset() {
     this->set_up();
-    this->_white_lost_val = 0;
-    this->_black_lost_val = 0;
-    this->_captured_white.clear();
-    this->_captured_white.clear();
 }
 
 
@@ -298,20 +289,20 @@ PossibleMovement Board::_knight_move(BoardCoor co) const {
 PossibleMovement Board::_bishop_move(BoardCoor co) const {
     PossibleMovement ret;
     this->_diagnal_move(co, ret.moves, ret.captures, ret.protects);
-    return std::move(ret);
+    return ret;
 }
 
 PossibleMovement Board::_rook_move(BoardCoor co) const {
     PossibleMovement ret;
     this->_linear_move(co, ret.moves, ret.captures, ret.protects);
-    return std::move(ret);
+    return ret;
 }
 
 PossibleMovement Board::_queen_move(BoardCoor co) const {
     PossibleMovement ret;
     this->_linear_move(co, ret.moves, ret.captures, ret.protects);
     this->_diagnal_move(co, ret.moves, ret.captures, ret.protects);
-    return std::move(ret);
+    return ret;
 }
 
 NAMESPACE_DDDELTA_END

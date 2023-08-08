@@ -6,7 +6,7 @@
 #include <vector>
 #include <tuple>
 
-#include "code_utils.h"
+#include "code_utils.inc"
 #include "pieces.h"
 #include "moves.h"
 

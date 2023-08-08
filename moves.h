@@ -5,7 +5,7 @@
 #include <cstddef>
 
 #include "pieces.h"
-#include "code_utils.h"
+#include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
 enum class E_UniqueAction : std::uint8_t {

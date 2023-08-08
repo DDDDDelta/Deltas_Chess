@@ -9,7 +9,7 @@
 #include <ranges>
 #include <algorithm>
 
-#include "code_utils.h"
+#include "code_utils.inc"
 #include "pieces.h"
 #include "moves.h"
 
@@ -51,16 +51,11 @@ public:
 
     void set_up();
     void reset();
+    void remap_move();
 
 private:
     ChessBoard_t _board;
-    std::vector<Piece> _captured_white;
-    std::vector<Piece> _captured_black;
-    std::uint16_t _white_lost_val;
-    std::uint16_t _black_lost_val;
     bool _in_check;
-    bool _white_king_moved;
-    bool _black_king_moved;
 
 private:
     PossibleMovement _pawn_move(BoardCoor co) const;
