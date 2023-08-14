@@ -13,11 +13,13 @@ enum class E_UniqueAction : std::uint8_t {
     ShortCastle,
     LongCastle,
     EnPassant,
+    DoublePawnPush,
     Promote
 };
 
 
 struct PieceMove {
+    PieceMove(BoardCoor coor, E_UniqueAction action) : coor(coor), unique_action(action) {}
     BoardCoor coor;
     E_UniqueAction unique_action;
 };
@@ -27,14 +29,5 @@ struct PossibleMovement {
     std::vector<PieceMove> moves;
     std::vector<PieceMove> captures;
     std::vector<PieceMove> protects;
-};
-
-struct RecordedMovement {
-    Piece moved;
-    BoardCoor original_co;
-    BoardCoor final_co;
-    Piece captured;
-    BoardCoor captured_at;
-    E_UniqueAction unique_action;
 };
 NAMESPACE_DDDELTA_END

@@ -3,4 +3,4 @@ project(Deltas_Chess)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Deltas_Chess main.cpp chess_game.cpp chess_game.h board.cpp board.h pieces.cpp pieces.h code_utils.inc chess_macros.h player.h moves.cpp moves.h game_record.cpp game_record.h GUI.h GUI.cpp new_board.cpp new_board.h)
+add_executable(Deltas_Chess main.cpp chess_game.cpp chess_game.h pieces.cpp pieces.h code_utils.inc player.h moves.cpp moves.h GUI.h GUI.cpp board.cpp board.h)

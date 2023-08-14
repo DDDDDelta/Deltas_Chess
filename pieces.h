@@ -7,30 +7,23 @@
 #include <compare>
 
 #include "code_utils.inc"
-#include "chess_macros.h"
-
 
 
 NAMESPACE_DDDELTA_START
-struct BoardCoor {
-    i8 x;
-    i8 y;
+struct Vec2 {
+    i32 x;
+    i32 y;
 
     [[nodiscard]]
     bool on_board() const;
-
-    bool operator ==(const BoardCoor& rhs) const = default;
-
-    inline
-    BoardCoor operator +(BoardCoor rhs) const;
-
-    inline
-    BoardCoor operator -(BoardCoor rhs) const;
-
-    BoardCoor& operator +=(BoardCoor rhs);
+    bool operator ==(const Vec2& rhs) const = default;
+    Vec2 operator +(Vec2 rhs) const;
+    Vec2 operator -(Vec2 rhs) const;
+    Vec2& operator +=(Vec2 rhs);
 };
 
-using Vec2 = BoardCoor;
+
+using BoardCoor = Vec2;
 
 
 enum class E_Color : bool {
@@ -39,13 +32,21 @@ enum class E_Color : bool {
 };
 
 
+inline E_Color operator !(E_Color color) {
+    if (to_underlying(color))
+        return E_Color::Black;
+    else
+        return E_Color::White;
+}
+
+
 enum class E_PieceType : u8 {
-    Pawn = 'P',
+    Pawn   = 'P',
     Knight = 'N',
     Bishop = 'B',
-    King = 'K',
-    Rook = 'R',
-    Queen = 'Q'
+    King   = 'K',
+    Rook   = 'R',
+    Queen  = 'Q'
 };
 
 
@@ -61,19 +62,19 @@ std::strong_ordering operator <=>(const Piece& lhs, const Piece& rhs);
 
 
 namespace constant {
-    constexpr BoardCoor INVALID_COOR{0, 0};
-    constexpr Piece WhiteKing = {E_Color::White, E_PieceType::King};
-    constexpr Piece WhiteQueen = {E_Color::White, E_PieceType::Queen};
-    constexpr Piece WhiteRook = {E_Color::White, E_PieceType::Rook};
-    constexpr Piece WhiteBishop = {E_Color::White, E_PieceType::Bishop};
-    constexpr Piece WhiteKnight = {E_Color::White, E_PieceType::Knight};
-    constexpr Piece WhitePawn = {E_Color::White, E_PieceType::Pawn};
-    constexpr Piece BlackKing = {E_Color::Black, E_PieceType::King};
-    constexpr Piece BlackQueen = {E_Color::Black, E_PieceType::Queen};
-    constexpr Piece BlackRook = {E_Color::Black, E_PieceType::Rook};
-    constexpr Piece BlackBishop = {E_Color::Black, E_PieceType::Bishop};
-    constexpr Piece BlackKnight = {E_Color::Black, E_PieceType::Knight};
-    constexpr Piece BlackPawn = {E_Color::Black, E_PieceType::Pawn};
+inline constexpr BoardCoor INVALID_COOR { 0, 0 };
+inline constexpr Piece WhiteKing   { E_Color::White, E_PieceType::King };
+inline constexpr Piece WhiteQueen  { E_Color::White, E_PieceType::Queen };
+inline constexpr Piece WhiteRook   { E_Color::White, E_PieceType::Rook };
+inline constexpr Piece WhiteBishop { E_Color::White, E_PieceType::Bishop };
+inline constexpr Piece WhiteKnight { E_Color::White, E_PieceType::Knight };
+inline constexpr Piece WhitePawn   { E_Color::White, E_PieceType::Pawn };
+inline constexpr Piece BlackKing   { E_Color::Black, E_PieceType::King };
+inline constexpr Piece BlackQueen  { E_Color::Black, E_PieceType::Queen };
+inline constexpr Piece BlackRook   { E_Color::Black, E_PieceType::Rook };
+inline constexpr Piece BlackBishop { E_Color::Black, E_PieceType::Bishop };
+inline constexpr Piece BlackKnight { E_Color::Black, E_PieceType::Knight };
+inline constexpr Piece BlackPawn   { E_Color::Black, E_PieceType::Pawn };
 }
 NAMESPACE_DDDELTA_END
 

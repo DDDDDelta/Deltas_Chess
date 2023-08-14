@@ -5,18 +5,18 @@ NAMESPACE_DDDELTA_START
 
 
 
-BoardCoor BoardCoor::operator +(BoardCoor rhs) const {
-    return { static_cast<i8> (this->x + rhs.x),
-             static_cast<i8> (this->y + rhs.y) };
+Vec2 Vec2::operator +(Vec2 rhs) const {
+    return { this->x + rhs.x,
+             this->y + rhs.y };
 }
 
 
-BoardCoor BoardCoor::operator -(BoardCoor rhs) const {
-    return { static_cast<i8> (this->x - rhs.x),
-             static_cast<i8> (this->y - rhs.y) };
+Vec2 Vec2::operator -(Vec2 rhs) const {
+    return { this->x - rhs.x,
+             this->y - rhs.y };
 }
 
-BoardCoor& BoardCoor::operator +=(BoardCoor rhs) {
+Vec2& Vec2::operator +=(Vec2 rhs) {
     this->x += rhs.x;
     this->y += rhs.y;
     return *this;

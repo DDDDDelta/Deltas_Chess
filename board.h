@@ -1,93 +1,72 @@
 #pragma once
-#define DELTAS_CHESS_BOARD_H
+#define DELTAS_CHESS_NEW_BOARD_H
 
-#include <tuple>
 #include <array>
-#include <vector>
 #include <cstdint>
+#include <optional>
+#include <utility>
 #include <memory>
 #include <ranges>
-#include <algorithm>
+#include <cassert>
+#include <type_traits>
 
 #include "code_utils.inc"
 #include "pieces.h"
 #include "moves.h"
 
 NAMESPACE_DDDELTA_START
-struct PieceWithMove {
-    std::optional<PossibleMovement> opt_movement;
-    Piece piece;
+using OptPiece = std::optional<Piece>;
+
+
+template <typename T>
+struct colored_pair : std::pair<T, T> {
+    inline colored_pair(T first, T second) : std::pair<T, T>(first, second) {}
+    inline T& operator [](E_Color color) { return to_underlying(color) ? this->first : this->second; }
+    inline const T& operator [](E_Color color) const { return to_underlying(color) ? this->first : this->second; }
 };
 
-
-using ChessBoard_t = std::array<std::array<PieceWithMove, 8>, 8>;
-
-class ChessGame;
 
 class Board {
 public:
+    using ChessBoard_t = std::array<std::array<OptPiece, 8>, 8>;
+
+private:
+    using BoolPair = colored_pair<bool>;
+
+public:
     Board();
 
-    inline
-    Piece& get_piece(BoardCoor co) { return this->_board[co.x - 1][co.y - 1].piece; }
-    inline
-    Piece& get_piece(std::uint8_t x, std::uint8_t y) { return this->_board[x - 1][y - 1].piece; }
-    inline
-    const Piece& get_piece(BoardCoor co) const { return this->_board[co.x - 1][co.y - 1].piece; }
-    inline
-    const Piece& get_piece(std::uint8_t x, std::uint8_t y) const { return this->_board[x - 1][y - 1].piece; }
-    inline
-    ChessBoard_t& get_board() { return this->_board; }
-    inline
-    const ChessBoard_t& get_board() const { return this->_board; }
-    inline
-    const std::optional<PossibleMovement>& get_move(std::uint8_t x, std::uint8_t y) const {
-        return this->_board[x - 1][y - 1].opt_movement;
-    }
-    inline
-    const std::optional<PossibleMovement>& get_move(BoardCoor co) const {
-        return this->_board[co.x - 1][co.y - 1].opt_movement;
-    }
+    NODISCARD inline
+    OptPiece get_piece(BoardCoor coor) const { assert_on_board_coor(coor); return this->_board[coor.x - 1][coor.y - 1]; }
+    NODISCARD inline
+    OptPiece get_piece(i32 x, i32 y) const { assert_on_board_xy(x, y); return this->_board[x - 1][y - 1]; };
+    NODISCARD PossibleMovement* get_move(BoardCoor coor) const;
+    NODISCARD PossibleMovement* get_move(i32 x, i32 y) const;
+    NODISCARD inline
+    BoardCoor in_check() const { return this->_in_check; }
 
-    void set_up();
-    void reset();
-    void remap_move();
+    NODISCARD inline
+    auto board_range() const { return this->_board | stdvw::join; }
 
 private:
     ChessBoard_t _board;
-    bool _in_check;
+    BoolPair _can_castle_short;
+    BoolPair _can_castle_long;
+    BoardCoor _in_check;
+    BoardCoor _last_double_pawn_move;
+
 
 private:
-    PossibleMovement _pawn_move(BoardCoor co) const;
-    PossibleMovement _knight_move(BoardCoor co) const;
-    PossibleMovement _bishop_move(BoardCoor co) const;
-    PossibleMovement _rook_move(BoardCoor co) const;
-    PossibleMovement _queen_move(BoardCoor co) const;
-    PossibleMovement _king_move(BoardCoor co) const;
+    NODISCARD PossibleMovement* _king_move(BoardCoor co) const;
+    NODISCARD PossibleMovement* _pawn_move(BoardCoor co) const;
+    NODISCARD PossibleMovement* _knight_move(BoardCoor co) const;
+    NODISCARD PossibleMovement* _bishop_move(BoardCoor co) const;
+    NODISCARD PossibleMovement* _rook_move(BoardCoor co) const;
+    NODISCARD PossibleMovement* _queen_move(BoardCoor co) const;
 
-    void _diagnal_move(BoardCoor co,
-                       std::vector<PieceMove>& moves,
-                       std::vector<PieceMove>& captures,
-                       std::vector<PieceMove>& protects) const;
-    void _linear_move(BoardCoor co,
-                      std::vector<PieceMove>& moves,
-                      std::vector<PieceMove>& captures,
-                      std::vector<PieceMove>& protects) const;
 
-    static inline
-    constexpr auto _adaptor_to_piecemove = stdvw::transform([](BoardCoor coor) -> PieceMove {
-        return { coor, E_UniqueAction::None };
-    });
-
-    static inline
-    constexpr auto _adaptor_leaves_empty = stdvw::filter([](BoardCoor coor) -> PieceMove {
-        return { coor, E_UniqueAction::None };
-    });
-
-    static inline
-    constexpr auto _adaptor_leave_on_board = stdvw::filter([](BoardCoor coor) { return coor.on_board(); });
-
-    auto _adaptor_leave_same_color_with(E_Color color) const;
-    auto _adaptor_leave_diff_color_with(E_Color color) const;
+    PossibleMovement* _diagonal_move(PossibleMovement* p_movement, BoardCoor co) const;
+    PossibleMovement* _linear_move(PossibleMovement* movement, BoardCoor co) const;
 };
+
 NAMESPACE_DDDELTA_END
