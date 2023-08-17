@@ -44,6 +44,17 @@ public:
     NODISCARD PossibleMovement* get_move(i32 x, i32 y) const;
     NODISCARD inline
     BoardCoor in_check() const { return this->_in_check; }
+    NODISCARD inline
+    bool is_empty_sqr(BoardCoor coor) const { assert_on_board_coor(coor); return !this->get_piece(coor); }
+    NODISCARD inline
+    bool is_empty_sqr(i32 x, i32 y) const { assert_on_board_xy(x, y); return !this->get_piece(x, y); }
+
+    NODISCARD bool is_checkmated() const { return false; }
+    NODISCARD bool is_a_draw() const { return false; }
+
+    // returns constant::INVALID_COOR if no checks
+    // returns the coordinate of king under check otherwise
+    BoardCoor execute_move(BoardCoor selection, PieceMove piece_move);
 
     NODISCARD inline
     auto board_range() const { return this->_board | stdvw::join; }
@@ -55,7 +66,6 @@ private:
     BoardCoor _in_check;
     BoardCoor _last_double_pawn_move;
 
-
 private:
     NODISCARD PossibleMovement* _king_move(BoardCoor co) const;
     NODISCARD PossibleMovement* _pawn_move(BoardCoor co) const;
@@ -64,9 +74,13 @@ private:
     NODISCARD PossibleMovement* _rook_move(BoardCoor co) const;
     NODISCARD PossibleMovement* _queen_move(BoardCoor co) const;
 
+    OptPiece& _get_piece_ref(BoardCoor coor) { assert_on_board_coor(coor); return this->_board[coor.x - 1][coor.y - 1]; }
+    OptPiece& _get_piece_ref(i32 x, i32 y) { assert_on_board_xy(x, y); return this->_board[x - 1][y - 1]; }
 
     PossibleMovement* _diagonal_move(PossibleMovement* p_movement, BoardCoor co) const;
     PossibleMovement* _linear_move(PossibleMovement* movement, BoardCoor co) const;
+
+    NODISCARD BoardCoor _is_in_check(E_Color color) const { return constant::INVALID_COOR; }
 };
 
 NAMESPACE_DDDELTA_END

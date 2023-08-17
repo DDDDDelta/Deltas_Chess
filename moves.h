@@ -2,13 +2,13 @@
 #define DELTAS_CHESS_MOVES_H
 
 #include <vector>
-#include <cstddef>
+#include <cstdint>
 
 #include "pieces.h"
 #include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
-enum class E_UniqueAction : std::uint8_t {
+enum class E_UniqueAction : u8 {
     None,
     ShortCastle,
     LongCastle,
@@ -19,7 +19,7 @@ enum class E_UniqueAction : std::uint8_t {
 
 
 struct PieceMove {
-    PieceMove(BoardCoor coor, E_UniqueAction action) : coor(coor), unique_action(action) {}
+    PieceMove(BoardCoor co, E_UniqueAction action) : coor(co), unique_action(action) {}
     BoardCoor coor;
     E_UniqueAction unique_action;
 };

@@ -86,7 +86,7 @@ static auto adap_remove_attacked(Board* self, E_Color color) {
 
 
 PossibleMovement* Board::_knight_move(BoardCoor co) const {
-    assert(this->get_piece(co) != nullopt);
+    assert(!this->is_empty_sqr(co));
 
     auto all_move = all_knight_movement(co);
     auto valid_move = all_move | adap_remove_off_board;
@@ -112,7 +112,7 @@ PossibleMovement* Board::_knight_move(BoardCoor co) const {
 
 
 PossibleMovement* Board::_diagonal_move(PossibleMovement* p_movement, BoardCoor co) const {
-    assert(this->get_piece(co) != nullopt);
+    assert(!this->is_empty_sqr(co));
 
     E_Color curr_color = this->get_piece(co)->color;
 
@@ -142,7 +142,7 @@ PossibleMovement* Board::_diagonal_move(PossibleMovement* p_movement, BoardCoor 
 
 
 PossibleMovement* Board::_linear_move(PossibleMovement* p_movement, BoardCoor co) const {
-    assert(this->get_piece(co) != nullopt);
+    assert(!this->is_empty_sqr(co));
 
     E_Color curr_color = this->get_piece(co)->color;
 
@@ -172,7 +172,7 @@ PossibleMovement* Board::_linear_move(PossibleMovement* p_movement, BoardCoor co
 
 
 PossibleMovement* Board::_bishop_move(BoardCoor co) const {
-    assert(this->get_piece(co) != nullopt);
+    assert(!this->is_empty_sqr(co));
 
     auto p_ret = new PossibleMovement;
     return this->_diagonal_move(p_ret, co);
@@ -180,15 +180,14 @@ PossibleMovement* Board::_bishop_move(BoardCoor co) const {
 
 
 PossibleMovement* Board::_rook_move(BoardCoor co) const {
-    assert(this->get_piece(co) != nullopt);
-
+    assert(!this->is_empty_sqr(co));
     auto p_ret = new PossibleMovement;
     return this->_linear_move(p_ret, co);
 }
 
 
 PossibleMovement* Board::_queen_move(BoardCoor co) const {
-    assert(this->get_piece(co) != nullopt);
+    assert(!this->is_empty_sqr(co));
 
     auto p_ret = new PossibleMovement;
     this->_linear_move(p_ret, co);
@@ -198,13 +197,14 @@ PossibleMovement* Board::_queen_move(BoardCoor co) const {
 
 
 PossibleMovement* Board::_pawn_move(BoardCoor co) const {
-    assert(this->get_piece(co) != nullopt);
+    assert(!this->is_empty_sqr(co));
     assert(co.y != 1 && co.y != 8);
 
     E_Color selected_color = this->get_piece(co)->color;
     i32 direction = to_underlying(selected_color) ? 1 : -1;
     i32 promotion_rank = to_underlying(selected_color) ? 8 : 1;
     i32 initial_rank = to_underlying(selected_color) ? 2 : 7;
+    i32 en_passant_rank = to_underlying(selected_color) ? 5 : 4;
 
     std::array<BoardCoor, 2> diagonal {
         BoardCoor(co.x + 1, co.y + direction),
@@ -214,8 +214,8 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
     auto p_ret = new PossibleMovement;
 
     for (BoardCoor coor : diagonal | adap_remove_off_board) {
-        if (!this->get_piece(coor)) {
-            if (this->_last_double_pawn_move.x == coor.x)
+        if (this->is_empty_sqr(coor)) {
+            if (coor.y == en_passant_rank && this->_last_double_pawn_move.x == coor.x)
                 p_ret->captures.emplace_back(coor, E_UniqueAction::EnPassant);
 
             continue;
@@ -232,14 +232,14 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
     }
 
     BoardCoor single_push = co + Vec2(0, direction);
-    if (single_push.on_board() && !this->get_piece(single_push))
+    if (single_push.on_board() && this->is_empty_sqr(single_push))
         p_ret->moves.emplace_back(co, E_UniqueAction::None);
     else
         return p_ret;
 
     BoardCoor double_push = co + Vec2(0, 2 * direction);
     if (co.y == initial_rank &&
-        !this->get_piece(double_push)) // on initial rank and no blocking
+        this->is_empty_sqr(double_push)) // on initial rank and no blocking
         p_ret->moves.emplace_back(co, E_UniqueAction::DoublePawnPush);
 
     return p_ret;
@@ -248,8 +248,9 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
 
 // TODO: finish this
 PossibleMovement* Board::_king_move(BoardCoor co) const {
-    assert(this->get_piece(co) != nullopt);
+    assert(!this->is_empty_sqr(co));
 
+    E_Color color = this->get_piece(co)->color;
     auto all_move = all_king_movement(co);
     auto valid_move = all_move | adap_remove_off_board;
 
@@ -265,11 +266,26 @@ PossibleMovement* Board::_king_move(BoardCoor co) const {
         | adap_remove_color_of(this, !this->get_piece(co)->color)
         | adap_to_piecemove;
 
-    return new PossibleMovement {
+    auto ret = new PossibleMovement {
         { move_range.begin(), move_range.end() },
         { capture_range.begin(), capture_range.end() },
         { protect_range.begin(), protect_range.end() }
     };
+
+    BoardCoor short_castle_target = co + Vec2(2, 0);
+    if (this->_can_castle_short[color] &&
+        this->is_empty_sqr(short_castle_target) &&
+        this->is_empty_sqr(co + Vec2(1, 0)))
+        ret->moves.emplace_back(short_castle_target, E_UniqueAction::ShortCastle);
+
+    BoardCoor long_castle_target = co - Vec2(2, 0);
+    if (this->_can_castle_long[color] &&
+        this->is_empty_sqr(co - Vec2(3, 0)) &&
+        this->is_empty_sqr(short_castle_target) &&
+        this->is_empty_sqr(co - Vec2(1, 0)))
+        ret->moves.emplace_back(long_castle_target, E_UniqueAction::LongCastle);
+
+    return ret;
 }
 
 
@@ -305,5 +321,37 @@ PossibleMovement* Board::get_move(i32 x, i32 y) const {
     assert_on_board_xy(x, y);
 
     return this->get_move({ x, y });
+}
+
+
+BoardCoor Board::execute_move(BoardCoor selection, PieceMove piece_move) {
+    assert(!this->is_empty_sqr(selection));
+    assert_on_board_coor(selection);
+
+    E_Color color = this->get_piece(selection)->color;
+    E_UniqueAction action = piece_move.unique_action;
+    BoardCoor target = piece_move.coor;
+    this->_get_piece_ref(target) = this->get_piece(selection);
+    switch (action) {
+        case E_UniqueAction::None:
+        case E_UniqueAction::DoublePawnPush:
+            break;
+        case E_UniqueAction::ShortCastle:
+            std::swap(this->_get_piece_ref(selection + Vec2(1, 0)), this->_get_piece_ref(selection + Vec2(3, 0)));
+            break;
+        case E_UniqueAction::LongCastle:
+            std::swap(this->_get_piece_ref(selection - Vec2(1, 0)), this->_get_piece_ref(selection - Vec2(4, 0)));
+            break;
+        case E_UniqueAction::EnPassant:
+            this->_get_piece_ref(target.x, selection.y).reset();
+            break;
+        case E_UniqueAction::Promote:
+        default:
+            UNREACHABLE();
+    }
+
+    this->_get_piece_ref(selection).reset();
+
+    return this->_in_check = this->_is_in_check(color);
 }
 NAMESPACE_DDDELTA_END
