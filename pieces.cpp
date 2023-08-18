@@ -2,9 +2,6 @@
 #include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
-
-
-
 Vec2 Vec2::operator +(Vec2 rhs) const {
     return { this->x + rhs.x,
              this->y + rhs.y };
@@ -33,6 +30,4 @@ std::strong_ordering operator <=>(const Piece& lhs, const Piece& rhs) {
     else
         return lhs.type <=> rhs.type;
 }
-
-
 NAMESPACE_DDDELTA_END

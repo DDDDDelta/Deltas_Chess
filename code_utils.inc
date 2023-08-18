@@ -1,3 +1,4 @@
+#include <iostream>
 #pragma once
 #define DELTAS_CHESS_CODE_UTILS_INC
 
@@ -36,6 +37,8 @@ using std::nullopt;
 #endif // __ASSERT_H_
 
 
+#define LOG_TO_STDOUT(message) std::cout << (message) << std::endl
+
 // types
 NAMESPACE_DDDELTA_START
 #ifdef _GLIBCXX_CSTDINT
@@ -55,7 +58,7 @@ using f64  = double;
 using f128 = long double;
 #endif // _GLIBCXX_CFLOAT
 
-#ifdef _GLIBCXX_TYPE_TRAITS
+#if defined _GLIBCXX_TYPE_TRAITS && __cplusplus <= 202002L
 template <class E>
 inline constexpr std::underlying_type_t<E> to_underlying(E e) {
     return static_cast<std::underlying_type_t<E>>(e);

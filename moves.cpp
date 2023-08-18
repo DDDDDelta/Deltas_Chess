@@ -1,3 +1,2 @@
-#include "code_utils.inc"
 #include "moves.h"
-
+#include "code_utils.inc"

@@ -61,12 +61,16 @@ public:
     const Player player_black;
 
     // operators
+    /*
+     * returns std::weak_ptr bound to nullptr if selection is illegal
+     * modifies _selected if legal
+     */
     std::weak_ptr<const PossibleMovement> select_piece(BoardCoor co);
     /*
      * returns std::nullopt if execution is illegal
      * returns E_UniqueAction according to executed move
      * throws throwable::pawn_promote(this, target_coor) if the move is a pawn promotion
-     * throws throwable::game_end if one side is checkmated
+     * throws throwable::game_end if one side is checkmated or the game ended in a draw
      */
     std::optional<E_UniqueAction> execute_move(BoardCoor target_coor) noexcept(false);
 
