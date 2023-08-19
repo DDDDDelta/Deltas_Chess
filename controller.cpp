@@ -16,10 +16,10 @@
 (board_x != 0 && board_y != 0 && ((mouse_x / 100 + 1) != board_x || (mouse_y / 100 + 1) != board_y))
 #define TO_INT8(x)  (static_cast<std::int8_t> (x))
 #define TO_BOARDCOOR(x, y) (DDDelta::BoardCoor(TO_INT8(x / 100 + 1), TO_INT8(y / 100 + 1)))
-#define ABLE_TO_SELECT(x, y) (!_chess_game->get_selection())
-#define UNABLE_TO_EXECUTE(x, y) (!_chess_game->execute_move(TO_BOARDCOOR(x, y)))
-#define NOT_UNIQUE_ACTION(x, y) (_chess_game->execute_move(TO_BOARDCOOR(x, y)).value() == DDDelta::E_UniqueAction::None)
-#define PROMOTE_START(x, y) (_chess_game->execute_move(TO_BOARDCOOR(x, y)).value() == DDDelta::E_UniqueAction::Promote)
+//#define ABLE_TO_SELECT(x, y) (!_chess_game->get_selection())
+//#define UNABLE_TO_EXECUTE(x, y) (!_chess_game->execute_move(TO_BOARDCOOR(x, y)))
+//#define NOT_UNIQUE_ACTION(x, y) (_chess_game->execute_move(TO_BOARDCOOR(x, y)).value() == DDDelta::E_UniqueAction::None)
+//#define PROMOTE_START(x, y) (_chess_game->execute_move(TO_BOARDCOOR(x, y)).value() == DDDelta::E_UniqueAction::Promote)
 NAMESPACE_BOBZHENG00_START
 
 
@@ -59,7 +59,6 @@ void Controller::_handle_mouse_click() {
     if (!_in_game) return;
     int mouse_x, mouse_y;
     SDL_GetMouseState(&mouse_x, &mouse_y);
-
 
     if (ON_BOARD(mouse_x, mouse_y))
     {
@@ -252,10 +251,6 @@ bool Controller::_handle_result(DDDelta::E_Result res) {
 //    _gui->render_result(res);
     return true;
 }
-
-
-
-
 
 
 NAMESPACE_BOBZHENG00_END
