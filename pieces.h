@@ -1,44 +1,52 @@
 #pragma once
-#ifndef DELTAS_CHESS_PIECES_H
 #define DELTAS_CHESS_PIECES_H
 
-#include <cstddef>
+#include <cstdint>
 #include <string>
 #include <vector>
-
-#include "code_utils.h"
-#include "chess_macros.h"
 #include <compare>
+
+#include "code_utils.inc"
 
 
 NAMESPACE_DDDELTA_START
-struct BoardCoor {
-    std::uint8_t x;
-    std::uint8_t y;
+struct Vec2 {
+    i32 x;
+    i32 y;
 
-    [[nodiscard]] bool on_board(std::int8_t delta_x, std::int8_t delta_y) const;
-    bool operator ==(BoardCoor rhs) const;
+    [[nodiscard]]
+    bool on_board() const;
+    bool operator ==(const Vec2& rhs) const = default;
+    Vec2 operator +(Vec2 rhs) const;
+    Vec2 operator -(Vec2 rhs) const;
+    Vec2& operator +=(Vec2 rhs);
 };
 
 
-extern constexpr BoardCoor INVALID_COOR { 0 , 0 };
+using BoardCoor = Vec2;
 
 
-enum class E_Color : std::uint8_t {
-    White,
-    Black,
-    Neither
+enum class E_Color : bool {
+    White = true,
+    Black = false
 };
 
 
-enum class E_PieceType : char {
-    Empty = ' ',
-    Pawn = 'P',
+inline E_Color operator !(E_Color color) {
+    if (to_underlying(color))
+        return E_Color::Black;
+    else
+        return E_Color::White;
+}
+
+
+enum class E_PieceType : u8 {
+    Pawn   = 'P',
     Knight = 'N',
     Bishop = 'B',
-    King = 'K',
-    Rook = 'R',
-    Queen = 'Q'
+    King   = 'K',
+    Rook   = 'R',
+    Queen  = 'Q'
 };
 
 
@@ -46,30 +54,27 @@ struct Piece {
     E_Color color;
     E_PieceType type;
 
-    inline
     bool operator ==(const Piece&) const = default;
 };
 
-auto operator <=>(const Piece& lhs, const Piece& rhs) {
-    if (lhs.color != rhs.color)
-        return lhs.color <=> rhs.color;
-    else
-        return lhs.type <=> rhs.type;
-}
 
-constexpr Piece WhiteKing = { E_Color::White, E_PieceType::King };
-constexpr Piece WhiteQueen = { E_Color::White, E_PieceType::Queen };
-constexpr Piece WhiteRook = { E_Color::White, E_PieceType::Rook };
-constexpr Piece WhiteBishop = { E_Color::White, E_PieceType::Bishop };
-constexpr Piece WhiteKnight = { E_Color::White, E_PieceType::Knight };
-constexpr Piece WhitePawn = { E_Color::White, E_PieceType::Pawn };
-constexpr Piece BlackKing = { E_Color::Black, E_PieceType::King };
-constexpr Piece BlackQueen = { E_Color::Black, E_PieceType::Queen };
-constexpr Piece BlackRook = { E_Color::Black, E_PieceType::Rook };
-constexpr Piece BlackBishop = { E_Color::Black, E_PieceType::Bishop };
-constexpr Piece BlackKnight = { E_Color::Black, E_PieceType::Knight };
-constexpr Piece BlackPawn = { E_Color::Black, E_PieceType::Pawn };
-constexpr Piece Empty = { E_Color::Neither, E_PieceType::Empty };
+std::strong_ordering operator <=>(const Piece& lhs, const Piece& rhs);
+
+
+namespace constant {
+inline constexpr BoardCoor INVALID_COOR { 0, 0 };
+inline constexpr Piece WhiteKing   { E_Color::White, E_PieceType::King };
+inline constexpr Piece WhiteQueen  { E_Color::White, E_PieceType::Queen };
+inline constexpr Piece WhiteRook   { E_Color::White, E_PieceType::Rook };
+inline constexpr Piece WhiteBishop { E_Color::White, E_PieceType::Bishop };
+inline constexpr Piece WhiteKnight { E_Color::White, E_PieceType::Knight };
+inline constexpr Piece WhitePawn   { E_Color::White, E_PieceType::Pawn };
+inline constexpr Piece BlackKing   { E_Color::Black, E_PieceType::King };
+inline constexpr Piece BlackQueen  { E_Color::Black, E_PieceType::Queen };
+inline constexpr Piece BlackRook   { E_Color::Black, E_PieceType::Rook };
+inline constexpr Piece BlackBishop { E_Color::Black, E_PieceType::Bishop };
+inline constexpr Piece BlackKnight { E_Color::Black, E_PieceType::Knight };
+inline constexpr Piece BlackPawn   { E_Color::Black, E_PieceType::Pawn };
+}
 NAMESPACE_DDDELTA_END
-#endif //DELTAS_CHESS_PIECES_H
 

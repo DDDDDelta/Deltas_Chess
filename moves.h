@@ -1,36 +1,33 @@
 #pragma once
-#ifndef DELTAS_CHESS_MOVES_H
 #define DELTAS_CHESS_MOVES_H
 
 #include <vector>
-#include <cstddef>
+#include <cstdint>
 
 #include "pieces.h"
-#include "code_utils.h"
+#include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
-enum class E_UniqueAction : std::uint8_t {
+enum class E_UniqueAction : u8 {
+    None,
     ShortCastle,
     LongCastle,
     EnPassant,
-    Promote,
-    FirstPawnMove
+    DoublePawnPush,
+    Promote
+};
+
+
+struct PieceMove {
+    PieceMove(BoardCoor co, E_UniqueAction action) : coor(co), unique_action(action) {}
+    BoardCoor coor;
+    E_UniqueAction unique_action;
 };
 
 
 struct PossibleMovement {
-    std::vector<BoardCoor> moves;
-    E_UniqueAction unique_action;
-};
-
-
-struct RecordedMovement {
-    Piece moved;
-    BoardCoor original_co;
-    BoardCoor final_co;
-    Piece captured;
-    BoardCoor captured_at;
-    E_UniqueAction unique_action;
+    std::vector<PieceMove> moves;
+    std::vector<PieceMove> captures;
+    std::vector<PieceMove> protects;
 };
 NAMESPACE_DDDELTA_END
-#endif //DELTAS_CHESS_MOVES_H
