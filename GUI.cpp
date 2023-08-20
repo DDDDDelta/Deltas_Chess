@@ -192,12 +192,14 @@ void GUI::render_tile(DDDelta::BoardCoor coor){
 
 void GUI::player_init() {
     SDL_Color textColor = {255, 255, 255, 255};
-    SDL_Surface *surface = TTF_RenderText_Solid(TTF_OpenFont("../font.ttf", 24), _chess_game->player_white.name[0].c_str(), textColor);
+    std::string player_black = _chess_game->player_black.name[0] + ' ' + _chess_game->player_black.name[1] + ' ' + _chess_game->player_black.name[2];
+    SDL_Surface *surface = TTF_RenderText_Solid(TTF_OpenFont("../font.ttf", 24), player_black.c_str(), textColor);
     SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
     SDL_Rect textRect = {850, 50, surface->w, surface->h};
     SDL_RenderCopy(renderer, texture, nullptr, &textRect);
 
-    surface = TTF_RenderText_Solid(TTF_OpenFont("../font.ttf", 24), _chess_game->player_black.name[0].c_str(), textColor);
+    std::string player_white = _chess_game->player_white.name[0] + ' ' + _chess_game->player_white.name[1] + ' ' + _chess_game->player_white.name[2];
+    surface = TTF_RenderText_Solid(TTF_OpenFont("../font.ttf", 24), player_white.c_str(), textColor);
     texture = SDL_CreateTextureFromSurface(renderer, surface);
     textRect = {850, 725, surface->w, surface->h};
     SDL_RenderCopy(renderer, texture, nullptr, &textRect);

@@ -82,7 +82,7 @@ void Controller::_handle_mouse_click() {
             _opt_selected = _chess_game->get_selection();
 
             if (_wp_moves.lock() == nullptr) {
-                std::cout << "illegal selction" << std::endl;
+                std::cout << "illegal selection" << std::endl;
                 return;
             }
 
