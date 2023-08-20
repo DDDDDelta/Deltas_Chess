@@ -10,6 +10,13 @@ ChessGame::ChessGame(Player&& pwhite, Player&& pblack) :
 std::weak_ptr<const PossibleMovement> ChessGame::select_piece(BoardCoor co) {
     assert(this->_selected == constant::INVALID_COOR);
 
+    // if the selection is illegal
+    if (!this->get_piece(co) || this->get_piece(co)->color != this->_turn) {
+        LOG_TO_STDOUT("illegal selection");
+        this->_sp_possible_move.reset();
+        return this->_sp_possible_move;
+    }
+
     LOG_TO_STDOUT("piece selected");
     this->_sp_possible_move.reset(this->_board.get_move(co));
     if (this->_sp_possible_move) {

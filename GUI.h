@@ -1,7 +1,3 @@
-//
-// Created by bobzheng on 2023/7/9.
-//
-
 #ifndef DELTAS_CHESS_GUI_H
 #define DELTAS_CHESS_GUI_H
 
@@ -76,14 +72,14 @@ class GUI {
         const DDDelta::ChessGame* _chess_game;
         std::optional<DDDelta::BoardCoor> _opt_hover;
         std::map<DDDelta::Piece, USurfacePtr> _piece_map;
-        std::unique_ptr<SDL_Surface, std::function<decltype(SDL_FreeSurface)>>  _white_tile;
-        std::unique_ptr<SDL_Surface, std::function<decltype(SDL_FreeSurface)>>  _black_tile;
-        std::unique_ptr<SDL_Surface, std::function<decltype(SDL_FreeSurface)>>  _hover_tile;
-        std::unique_ptr<SDL_Surface, std::function<decltype(SDL_FreeSurface)>>  _select_tile;
-        std::unique_ptr<SDL_Surface, std::function<decltype(SDL_FreeSurface)>>  _move_tile;
-        std::unique_ptr<SDL_Surface, std::function<decltype(SDL_FreeSurface)>>  _capture_tile;
-        std::unique_ptr<SDL_Surface, std::function<decltype(SDL_FreeSurface)>>  _checked_tile;
-        std::unique_ptr<SDL_Surface, std::function<decltype(SDL_FreeSurface)>>  _promote_shade;
+        USurfacePtr _white_tile;
+        USurfacePtr _black_tile;
+        USurfacePtr _hover_tile;
+        USurfacePtr _select_tile;
+        USurfacePtr _move_tile;
+        USurfacePtr _capture_tile;
+        USurfacePtr _checked_tile;
+        USurfacePtr _promote_shade;
         std::unique_ptr<TTF_Font, std::function<decltype(TTF_CloseFont)>> _font24;
 
 

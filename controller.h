@@ -19,22 +19,13 @@
 
 
 NAMESPACE_BOBZHENG00_START
-
-
-class Controller {
+    class Controller {
     public:
         std::optional<DDDelta::BoardCoor> opt_hover;
 
         Controller(GUI* gui, DDDelta::ChessGame* chess_game):
-        _gui(gui), _chess_game(chess_game)
-        {
-            _quit = false;
-            _in_game = true;
-            opt_hover.reset();
-            _opt_moves.reset();
-            _opt_selected.reset();
-            _opt_executed.reset();
-        }
+        _gui(gui), _chess_game(chess_game), _quit(false), _in_game(true)
+        {}
 
         void run();
 
@@ -43,8 +34,8 @@ class Controller {
         bool _quit;
         bool _in_game;
         DDDelta::ChessGame* _chess_game;
-//        std::optional<DDDelta::PossibleMovement> _opt_moves;
-        std::weak_ptr<const DDDelta::PossibleMovement> _opt_moves;
+        // std::optional<DDDelta::PossibleMovement> _wp_moves;
+        std::weak_ptr<const DDDelta::PossibleMovement> _wp_moves;
         std::optional<DDDelta::BoardCoor> _opt_selected;
         std::optional<DDDelta::E_UniqueAction> _opt_executed;
         void _handle_mouse_move();

@@ -11,11 +11,13 @@
 #include <algorithm>
 #include <ranges>
 #include <type_traits>
+#include <iostream>
 
 #include "pieces.h"
 #include "player.h"
 #include "board.h"
 #include "moves.h"
+#include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
 enum class E_GameStatus : u8 {
@@ -43,7 +45,7 @@ class ChessGame {
 public:
     ChessGame(Player&& pwhite, Player&& pblack);
 
-    // observer
+    // observers
     NODISCARD inline E_Result get_result() const { return this->_res; }
     NODISCARD inline OptPiece get_piece(i32 x, i32 y) const { assert_on_board_xy(x, y); return this->_board.get_piece(x, y); }
     NODISCARD inline OptPiece get_piece(BoardCoor co) const { assert_on_board_coor(co); return this->_board.get_piece(co); }
@@ -55,7 +57,6 @@ public:
             return this->_selected;
     }
     NODISCARD inline BoardCoor in_check() const { return this->_board.in_check(); }
-
 
     const Player player_white;
     const Player player_black;

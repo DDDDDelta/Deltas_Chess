@@ -1,7 +1,3 @@
-//
-// Created by bobzheng on 2023/7/9.
-//
-
 #include <iostream>
 #include "SDL2_ttf/include/SDL_ttf.h"
 #include <SDL.h>
