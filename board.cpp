@@ -2,10 +2,6 @@
 #include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
-template <i32 Distance> requires (Distance <= 8 && Distance >= 1)
-static constexpr colored_pair<i32> nth_from_last_rank { 0 + Distance, 9 - Distance };
-
-
 template <E_PieceType Type>
 static inline constexpr std::array<std::optional<Piece>, 8> init_board_file {
     Piece(E_Color::White, Type), constant::WhitePawn, nullopt, nullopt,
@@ -123,7 +119,7 @@ PossibleMovement* Board::_diagonal_move(PossibleMovement* p_movement, BoardCoor 
     auto insert_move = [this, p_movement, curr_color](BoardCoor co) mutable {
         if (!co.on_board()) {
             return false;
-        } else if (this->get_piece(co)) {
+        } else if (this->is_empty_sqr(co)) {
             p_movement->moves.emplace_back(co, E_UniqueAction::None);
             return true;
         } else if (this->get_piece(co)->color == curr_color) {
@@ -136,10 +132,10 @@ PossibleMovement* Board::_diagonal_move(PossibleMovement* p_movement, BoardCoor 
     };
 
     BoardCoor
-    curr = co;    while (insert_move(curr += Vec2(1,1)));
-    curr = co;    while (insert_move(curr += Vec2(1,-1)));
-    curr = co;    while (insert_move(curr += Vec2(-1,-1)));
-    curr = co;    while (insert_move(curr += Vec2(-1,1)));
+    curr = co;    while (insert_move(curr += Vec2(1, 1)));
+    curr = co;    while (insert_move(curr += Vec2(1, -1)));
+    curr = co;    while (insert_move(curr += Vec2(-1, -1)));
+    curr = co;    while (insert_move(curr += Vec2(-1, 1)));
 
     return p_movement;
 }
@@ -153,7 +149,7 @@ PossibleMovement* Board::_linear_move(PossibleMovement* p_movement, BoardCoor co
     auto insert_move = [this, p_movement, curr_color](BoardCoor co) mutable {
         if (!co.on_board()) {
             return false;
-        } else if (this->get_piece(co)) {
+        } else if (this->is_empty_sqr(co)) {
             p_movement->moves.emplace_back(co, E_UniqueAction::None);
             return true;
         } else if (this->get_piece(co)->color == curr_color) {
@@ -167,9 +163,9 @@ PossibleMovement* Board::_linear_move(PossibleMovement* p_movement, BoardCoor co
 
     BoardCoor
     curr = co;     while (insert_move(curr += Vec2(1, 0)));
-    curr = co;     while (insert_move(curr += Vec2(-1,0)));
+    curr = co;     while (insert_move(curr += Vec2(-1, 0)));
     curr = co;     while (insert_move(curr += Vec2(0, 1)));
-    curr = co;     while (insert_move(curr += Vec2(0,-1)));
+    curr = co;     while (insert_move(curr += Vec2(0, -1)));
 
     return p_movement;
 }

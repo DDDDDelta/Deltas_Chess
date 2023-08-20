@@ -27,6 +27,10 @@ struct colored_pair : std::pair<T, T> {
 };
 
 
+template <i32 Distance> requires (Distance <= 8 && Distance >= 1)
+static constexpr colored_pair<i32> nth_from_last_rank { 0 + Distance, 9 - Distance };
+
+
 class Board {
 public:
     using ChessBoard_t = std::array<std::array<OptPiece, 8>, 8>;
