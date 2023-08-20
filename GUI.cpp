@@ -56,77 +56,77 @@ void GUI::render_promote_selection(DDDelta::BoardCoor coor) {
     SDL_Rect image_rect = {0, 0, 800, 800};
     SDL_RenderCopy(renderer, image_texture, nullptr, &image_rect);
     SDL_DestroyTexture(image_texture);
-    if (coor.y == 1)
+    if (coor.y == 8)
     {
         for (u8 row = 0; row <= 3; row++)
         {
-            render_tile(DDDelta::BoardCoor {coor.x, (coor.y+row)});
+            render_tile(DDDelta::BoardCoor {coor.x, (coor.y-row)});
             switch (row){
                 case 0:
                     image_texture =
                             SDL_CreateTextureFromSurface(renderer, _piece_map.at(DDDelta::constant::WhiteQueen).get());
-                    image_rect = {(coor.x-1)*100, (coor.y+row-1)*100, 100, 100};
+                    image_rect = {(coor.x-1)*100, (8-coor.y+row)*100, 100, 100};
                     SDL_RenderCopy(renderer, image_texture, nullptr, &image_rect);
                     SDL_DestroyTexture(image_texture);
                     break;
                 case 1:
                     image_texture =
                             SDL_CreateTextureFromSurface(renderer, _piece_map.at(DDDelta::constant::WhiteKnight).get());
-                    image_rect = {(coor.x-1)*100, (coor.y+row-1)*100, 100, 100};
+                    image_rect = {(coor.x-1)*100, (8-coor.y+row)*100, 100, 100};
                     SDL_RenderCopy(renderer, image_texture, nullptr, &image_rect);
                     SDL_DestroyTexture(image_texture);
                     break;
                 case 2:
                     image_texture =
                             SDL_CreateTextureFromSurface(renderer, _piece_map.at(DDDelta::constant::WhiteRook).get());
-                    image_rect = {(coor.x-1)*100, (coor.y+row-1)*100, 100, 100};
+                    image_rect = {(coor.x-1)*100, (8-coor.y+row)*100, 100, 100};
                     SDL_RenderCopy(renderer, image_texture, nullptr, &image_rect);
                     SDL_DestroyTexture(image_texture);
                     break;
                 case 3:
                     image_texture =
                             SDL_CreateTextureFromSurface(renderer, _piece_map.at(DDDelta::constant::WhiteBishop).get());
-                    image_rect = {(coor.x-1)*100, (coor.y+row-1)*100, 100, 100};
+                    image_rect = {(coor.x-1)*100, (8-coor.y+row)*100, 100, 100};
                     SDL_RenderCopy(renderer, image_texture, nullptr, &image_rect);
                     SDL_DestroyTexture(image_texture);
                     break;
                 default:
-                    assert(false);
+                    UNREACHABLE();
             }
         }
         return;
     }
-    else if (coor.y == 8)
+    else if (coor.y == 1)
     {
         for (std::uint8_t row = 0; row <= 3; row++)
         {
-            render_tile(DDDelta::BoardCoor {coor.x, (static_cast<int8_t>(coor.y+row))});
+            render_tile(DDDelta::BoardCoor {coor.x, (coor.y+row)}); //TODO: Add grey background circle
             switch (row){
                 case 0:
                     image_texture =
                             SDL_CreateTextureFromSurface(renderer, _piece_map.at(DDDelta::constant::BlackQueen).get());
-                    image_rect = {(coor.x-1)*100, (coor.y-row-1)*100, 100, 100};
+                    image_rect = {(coor.x-1)*100, (8-coor.y-row)*100, 100, 100};
                     SDL_RenderCopy(renderer, image_texture, nullptr, &image_rect);
                     SDL_DestroyTexture(image_texture);
                     break;
                 case 1:
                     image_texture =
                             SDL_CreateTextureFromSurface(renderer, _piece_map.at(DDDelta::constant::BlackKnight).get());
-                    image_rect = {(coor.x-1)*100, (coor.y-row-1)*100, 100, 100};
+                    image_rect = {(coor.x-1)*100, (8-coor.y-row)*100, 100, 100};
                     SDL_RenderCopy(renderer, image_texture, nullptr, &image_rect);
                     SDL_DestroyTexture(image_texture);
                     break;
                 case 2:
                     image_texture =
                             SDL_CreateTextureFromSurface(renderer, _piece_map.at(DDDelta::constant::BlackRook).get());
-                    image_rect = {(coor.x-1)*100, (coor.y-row-1)*100, 100, 100};
+                    image_rect = {(coor.x-1)*100, (8-coor.y-row)*100, 100, 100};
                     SDL_RenderCopy(renderer, image_texture, nullptr, &image_rect);
                     SDL_DestroyTexture(image_texture);
                     break;
                 case 3:
                     image_texture =
                             SDL_CreateTextureFromSurface(renderer, _piece_map.at(DDDelta::constant::BlackBishop).get());
-                    image_rect = {(coor.x-1)*100, (coor.y-row-1)*100, 100, 100};
+                    image_rect = {(coor.x-1)*100, (8-coor.y-row)*100, 100, 100};
                     SDL_RenderCopy(renderer, image_texture, nullptr, &image_rect);
                     SDL_DestroyTexture(image_texture);
                     break;
