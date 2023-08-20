@@ -82,7 +82,7 @@ void Controller::_handle_mouse_click() {
             _opt_selected = _chess_game->get_selection();
 
             if (_wp_moves.lock() == nullptr) {
-                std::cout << "illegal selction" << std::endl;
+                std::cout << "illegal selection" << std::endl;
                 return;
             }
 
@@ -123,8 +123,9 @@ void Controller::_handle_mouse_click() {
             }
             catch(DDDelta::throwable::pawn_promote& e)
             {
-                std::cout << "promote" << std::endl;
-                _gui->render_promote_selection(TO_BOARDCOOR(mouse_x, mouse_y));
+                std::cout << "ready to promote" << std::endl;
+                _gui->render_promote_selection(TO_CHESSBOARDCOOR(mouse_x, mouse_y));
+                SDL_RenderPresent(_gui->renderer);
 
                 SDL_Event promote;
                 while (true)
