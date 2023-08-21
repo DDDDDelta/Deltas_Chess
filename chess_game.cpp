@@ -84,6 +84,12 @@ pawn_promote::pawn_promote(Board* board, BoardCoor target, BoardCoor original) :
 }
 
 
+pawn_promote::~pawn_promote() {
+    if (!this->_used_flag)
+        this->_p_board->_get_piece_ref(this->_original).emplace(this->_color, E_PieceType::Pawn);
+}
+
+
 bool pawn_promote::select_promotion(BoardCoor selection) {
     assert(!this->_used_flag);
 

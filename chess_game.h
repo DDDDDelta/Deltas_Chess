@@ -87,6 +87,7 @@ class pawn_promote {
     // friend of Board
 public:
     pawn_promote(Board* board, BoardCoor co, BoardCoor original);
+    ~pawn_promote();
     bool select_promotion(BoardCoor selection);
 
 private:

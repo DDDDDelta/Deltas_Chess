@@ -210,15 +210,14 @@ void Controller::run() {
     _gui->board_init();
     SDL_Event event;
 
-    while(!_quit)
+    while (true)
     {
         SDL_WaitEvent(&event);
 
         switch (event.type)
         {
             case (SDL_QUIT):
-                _quit = true;
-                break;
+                goto Quit;
             case (SDL_MOUSEMOTION):
                 _handle_mouse_move();
                 break;
@@ -243,7 +242,8 @@ void Controller::run() {
         }
 
     }
-
+Quit:
+    return;
 }
 
 bool Controller::_handle_promote(SDL_Event promote, DDDelta::throwable::pawn_promote& e, DDDelta::BoardCoor coor) {
