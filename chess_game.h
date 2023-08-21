@@ -37,9 +37,7 @@ enum class E_Result : u8 {
 };
 
 
-namespace throwable {
-class pawn_promote;
-}
+
 
 class ChessGame {
 public:
@@ -81,22 +79,22 @@ private:
     E_Result _res;
     Board _board;
     std::shared_ptr<PossibleMovement> _sp_possible_move;
-
-    friend throwable::pawn_promote;
 };
 
 
 namespace throwable {
 class pawn_promote {
-    // friend of ChessGame
+    // friend of Board
 public:
-    pawn_promote(ChessGame* p_game, BoardCoor co);
+    pawn_promote(Board* board, BoardCoor co, BoardCoor original);
     bool select_promotion(BoardCoor selection);
 
 private:
-    ChessGame* _p_game;
-    BoardCoor _co;
+    Board* _p_board;
+    BoardCoor _target;
     BoardCoor _original;
+    E_Color _color;
+    bool _used_flag = false;
 };
 
 

@@ -131,7 +131,7 @@ void Controller::_handle_mouse_click() {
                 while (true)
                 {
                     SDL_WaitEvent(&promote);
-                    if (_handle_promote(promote, e, TO_BOARDCOOR(mouse_x, mouse_y))) break;
+                    if (_handle_promote(promote, e, TO_CHESSBOARDCOOR(mouse_x, mouse_y))) break;
                 }
 
                 return;

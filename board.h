@@ -31,6 +31,11 @@ template <i32 Distance> requires (Distance <= 8 && Distance >= 1)
 static constexpr colored_pair<i32> nth_from_last_rank { 0 + Distance, 9 - Distance };
 
 
+namespace throwable {
+class pawn_promote;
+}
+
+
 class Board {
 public:
     using ChessBoard_t = std::array<std::array<OptPiece, 8>, 8>;
@@ -87,6 +92,8 @@ private:
     PossibleMovement* _linear_move(PossibleMovement* movement, BoardCoor co) const;
 
     NODISCARD BoardCoor _is_in_check(E_Color color) const { return constant::INVALID_COOR; }
+
+    friend throwable::pawn_promote;
 };
 
 NAMESPACE_DDDELTA_END

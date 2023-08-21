@@ -40,7 +40,7 @@ std::optional<E_UniqueAction> ChessGame::execute_move(BoardCoor target_coor) {
 
     bool is_legal = it_move != all_legal_move_rng.end();
 
-    // if not a legal move
+    // if illegal move
     if (!is_legal) {
         LOG_TO_STDOUT("illegal execution");
         this->_selected = constant::INVALID_COOR;
@@ -50,8 +50,9 @@ std::optional<E_UniqueAction> ChessGame::execute_move(BoardCoor target_coor) {
     // if is a promotion
     if (it_move->unique_action == E_UniqueAction::Promote) {
         LOG_TO_STDOUT("promoting");
+        BoardCoor temp = this->_selected;
         this->_selected = constant::INVALID_COOR;
-        throw throwable::pawn_promote(this, target_coor);
+        throw throwable::pawn_promote(&this->_board, target_coor, temp);
     }
 
     BoardCoor in_check_king_pos = this->_board.execute_move(this->_selected, *it_move);
@@ -74,44 +75,43 @@ std::optional<E_UniqueAction> ChessGame::execute_move(BoardCoor target_coor) {
 
 
 namespace throwable {
-pawn_promote::pawn_promote(DDDelta::ChessGame* p_game, BoardCoor co) :
-    _p_game(p_game), _co(co), _original(p_game->_selected) {}
+pawn_promote::pawn_promote(Board* board, BoardCoor target, BoardCoor original) :
+    _p_board(board), _target(target), _original(original), _color(board->get_piece(this->_original)->color) {
+    assert_on_board_coor(this->_original);
+
+    LOG_TO_STDOUT("throwable constructed");
+    board->_get_piece_ref(original).reset();
+}
 
 
 bool pawn_promote::select_promotion(BoardCoor selection) {
-    E_PieceType type;
-    E_Color color = this->_p_game->get_piece(this->_original)->color;
+    assert(!this->_used_flag);
 
-    if (selection.x != this->_co.x)
+    LOG_TO_STDOUT("selecting promotion");
+    E_PieceType type;
+
+    if (selection.x != this->_target.x)
         return false;
 
-    switch (selection.y) {
-        case 1:
-        case 8:
-            type = E_PieceType::Queen;
-            break;
-        case 2:
-        case 7:
-            type = E_PieceType::Knight;
-            break;
-        case 3:
-        case 6:
-            type = E_PieceType::Rook;
-            break;
-        case 4:
-        case 5:
-            type = E_PieceType::Bishop;
-            break;
-        default:
-            return false;
-    }
+    if (selection.y == nth_from_last_rank<8>[this->_color])
+        type = E_PieceType::Queen;
+    else if (selection.y == nth_from_last_rank<7>[this->_color])
+        type = E_PieceType::Knight;
+    else if (selection.y == nth_from_last_rank<6>[this->_color])
+        type = E_PieceType::Rook;
+    else if (selection.y == nth_from_last_rank<5>[this->_color])
+        type = E_PieceType::Bishop;
+    else
+        return false;
 
+    this->_p_board->_get_piece_ref(this->_target) = Piece(this->_color, type);
 
+    this->_used_flag = true;
     return true;
 }
 
 
 game_end::game_end(BoardCoor in_check, E_Result result) : king_pos(in_check), res(result) {}
-}
+} // namespace throwable
 NAMESPACE_DDDELTA_END
 
