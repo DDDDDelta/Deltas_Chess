@@ -24,8 +24,7 @@ NAMESPACE_BOBZHENG00_START
         std::optional<DDDelta::BoardCoor> opt_hover;
 
         Controller(GUI* gui, DDDelta::ChessGame* chess_game):
-        _gui(gui), _chess_game(chess_game), _quit(false), _in_game(true)
-        {}
+                _gui(gui), _chess_game(chess_game), _quit(false), _in_game(true) {}
 
         void run();
 
@@ -40,8 +39,13 @@ NAMESPACE_BOBZHENG00_START
         std::optional<DDDelta::E_UniqueAction> _opt_executed;
         void _handle_mouse_move();
         void _handle_mouse_click();
-        bool _handle_promote(SDL_Event promote, DDDelta::throwable::pawn_promote& e, DDDelta::BoardCoor coor);
+        bool _handle_promote(SDL_Event promote, DDDelta::throwable::pawn_promote& e);
         bool _handle_result(DDDelta::E_Result res);
+
+//        enum _custom_event_type
+//        {
+//            timer = 1
+//        };
 };
 
 NAMESPACE_BOBZHENG00_END

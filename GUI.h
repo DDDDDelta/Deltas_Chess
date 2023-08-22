@@ -41,6 +41,7 @@ class GUI {
         void render_move(DDDelta::BoardCoor coor);
         void render_capture(DDDelta::BoardCoor coor);
         void render_select(DDDelta::BoardCoor coor);
+        void render_possible_moves(const std::shared_ptr<const DDDelta::PossibleMovement>& movement);
         void render_promote_selection(DDDelta::BoardCoor coor);
 //        void render_result(DDDelta::E_Result res);
         void player_init();

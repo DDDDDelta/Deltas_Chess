@@ -54,46 +54,6 @@ void GUI::render_piece(DDDelta::BoardCoor coor) {
 }
 
 
-void GUI::render_move(DDDelta::BoardCoor coor){
-    SDL_Rect image_rect = { (coor.x - 1) * 100, (8 - coor.y) * 100, 100, 100 };
-    SDL_RenderCopy(renderer, _move_texture.get(), nullptr,&image_rect);
-}
-
-
-void GUI::render_capture(DDDelta::BoardCoor coor){
-    SDL_Rect image_rect = { (coor.x - 1) * 100, (8 - coor.y) * 100, 100, 100 };
-    SDL_RenderCopy(renderer, _capture_texture.get(), nullptr,&image_rect);
-}
-
-
-void GUI::render_select(DDDelta::BoardCoor coor){
-    SDL_Rect image_rect = { (coor.x - 1) * 100, (8 - coor.y) * 100, 100, 100 };
-    SDL_RenderCopy(renderer, _select_texture.get(), nullptr, &image_rect);
-}
-
-
-void GUI::render_promote_selection(DDDelta::BoardCoor coor) {
-    SDL_Rect image_rect = { 0, 0, 800, 800 };
-    SDL_RenderCopy(renderer, _promote_texture.get(), nullptr,&image_rect);
-
-    render_tile({ coor.x, y_position<1>[coor.y] }); //TODO: Add grey background circle
-    image_rect = {(coor.x - 1)*100, (8 - y_position<1>[coor.y])*100, 100, 100};
-    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<1>[coor.y], DDDelta::E_PieceType::Queen }).get(), nullptr, &image_rect);
-
-    render_tile({ coor.x, y_position<2>[coor.y] });
-    image_rect = { (coor.x - 1)*100, (8 - y_position<2>[coor.y])*100, 100, 100 };
-    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<2>[coor.y], DDDelta::E_PieceType::Knight }).get(), nullptr, &image_rect);
-
-    render_tile({ coor.x, y_position<3>[coor.y] });
-    image_rect = { (coor.x - 1)*100, (8 - y_position<3>[coor.y])*100, 100, 100 };
-    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<3>[coor.y], DDDelta::E_PieceType::Rook }).get(), nullptr, &image_rect);
-
-    render_tile({ coor.x, y_position<4>[coor.y] });
-    image_rect = {(coor.x - 1)*100, (8 - y_position<4>[coor.y])*100, 100, 100};
-    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<4>[coor.y], DDDelta::E_PieceType::Bishop }).get(), nullptr, &image_rect);
-}
-
-
 void GUI::render_tile(DDDelta::BoardCoor coor){
 
     if (_opt_hover)
@@ -123,6 +83,79 @@ void GUI::render_tile(DDDelta::BoardCoor coor){
     //    return;
     //}
 
+}
+
+
+void GUI::render_move(DDDelta::BoardCoor coor){
+    SDL_Rect image_rect = { (coor.x - 1) * 100, (8 - coor.y) * 100, 100, 100 };
+    SDL_RenderCopy(renderer, _move_texture.get(), nullptr,&image_rect);
+}
+
+
+void GUI::render_capture(DDDelta::BoardCoor coor){
+    SDL_Rect image_rect = { (coor.x - 1) * 100, (8 - coor.y) * 100, 100, 100 };
+    SDL_RenderCopy(renderer, _capture_texture.get(), nullptr,&image_rect);
+}
+
+
+void GUI::render_select(DDDelta::BoardCoor coor){
+    SDL_Rect image_rect = { (coor.x - 1) * 100, (8 - coor.y) * 100, 100, 100 };
+    SDL_RenderCopy(renderer, _select_texture.get(), nullptr, &image_rect);
+}
+
+
+void GUI::render_possible_moves(const std::shared_ptr<const DDDelta::PossibleMovement>& movement){
+    if (_chess_game->get_selection())
+    {
+        for (auto pm : movement->captures)
+        {
+            render_capture(pm.coor);
+            render_piece(pm.coor);
+        }
+
+        for (auto pm : movement->moves)
+        {
+            render_move(pm.coor);
+            render_piece(pm.coor);
+        }
+    }
+    else
+    {
+        for (auto pm : movement->captures)
+        {
+            render_tile(pm.coor);
+            render_piece(pm.coor);
+        }
+
+        for (auto pm : movement->moves)
+        {
+            render_tile(pm.coor);
+            render_piece(pm.coor);
+        }
+    }
+
+}
+
+
+void GUI::render_promote_selection(DDDelta::BoardCoor coor) {
+    SDL_Rect image_rect = { 0, 0, 800, 800 };
+    SDL_RenderCopy(renderer, _promote_texture.get(), nullptr,&image_rect);
+
+    render_tile({ coor.x, y_position<1>[coor.y] }); //TODO: Add grey background circle
+    image_rect = {(coor.x - 1)*100, (8 - y_position<1>[coor.y])*100, 100, 100};
+    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<1>[coor.y], DDDelta::E_PieceType::Queen }).get(), nullptr, &image_rect);
+
+    render_tile({ coor.x, y_position<2>[coor.y] });
+    image_rect = { (coor.x - 1)*100, (8 - y_position<2>[coor.y])*100, 100, 100 };
+    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<2>[coor.y], DDDelta::E_PieceType::Knight }).get(), nullptr, &image_rect);
+
+    render_tile({ coor.x, y_position<3>[coor.y] });
+    image_rect = { (coor.x - 1)*100, (8 - y_position<3>[coor.y])*100, 100, 100 };
+    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<3>[coor.y], DDDelta::E_PieceType::Rook }).get(), nullptr, &image_rect);
+
+    render_tile({ coor.x, y_position<4>[coor.y] });
+    image_rect = {(coor.x - 1)*100, (8 - y_position<4>[coor.y])*100, 100, 100};
+    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<4>[coor.y], DDDelta::E_PieceType::Bishop }).get(), nullptr, &image_rect);
 }
 
 
