@@ -30,7 +30,7 @@ void Controller::_handle_mouse_move() {
     int mouse_x, mouse_y;
     SDL_GetMouseState(&mouse_x, &mouse_y);
 
-    // if goes out of board then reset hover and maybe redraw
+    // if it goes out of board then reset hover and maybe redraw
     if (!ON_BOARD(mouse_x, mouse_y)) {
         LOG_TO_STDOUT("out of board");
         if (opt_hover) {
@@ -81,7 +81,8 @@ void Controller::_handle_mouse_click() {
             _wp_moves = _chess_game->select_piece(TO_CHESSBOARDCOOR(mouse_x, mouse_y));
             _opt_selected = _chess_game->get_selection();
 
-            if (_wp_moves.lock() == nullptr) {
+            if (_wp_moves.lock() == nullptr)
+            {
                 std::cout << "illegal selection" << std::endl;
                 return;
             }
@@ -124,6 +125,7 @@ void Controller::_handle_mouse_click() {
             catch(DDDelta::throwable::pawn_promote& e)
             {
                 std::cout << "ready to promote" << std::endl;
+                _gui->board_init();
                 _gui->render_promote_selection(TO_CHESSBOARDCOOR(mouse_x, mouse_y));
                 SDL_RenderPresent(_gui->renderer);
 
@@ -131,15 +133,14 @@ void Controller::_handle_mouse_click() {
                 while (true)
                 {
                     SDL_WaitEvent(&promote);
-                    if (_handle_promote(promote, e, TO_CHESSBOARDCOOR(mouse_x, mouse_y))) break;
+                    if (_handle_promote(promote, e, TO_BOARDCOOR(mouse_x, mouse_y))) break;
                 }
 
-                return;
             }
 
             if (!action)
             {
-                std::cout << "regular action" << std::endl;
+                std::cout << "illegal action" << std::endl;
                 _gui->render_tile(_opt_selected.value());
                 _gui->render_piece(_opt_selected.value());
 
@@ -253,8 +254,12 @@ bool Controller::_handle_promote(SDL_Event promote, DDDelta::throwable::pawn_pro
         case (SDL_MOUSEBUTTONDOWN):
             if (promote.button.button == SDL_BUTTON_LEFT)
             {
-                e.select_promotion(coor);
+                int mouse_x, mouse_y;
+                SDL_GetMouseState(&mouse_x, &mouse_y);
+                e.select_promotion(TO_CHESSBOARDCOOR(mouse_x, mouse_y));
                 _gui->board_init();
+//                _wp_moves.reset();
+//                _opt_selected.reset();
                 return true;
             }
 
