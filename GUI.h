@@ -4,16 +4,18 @@
 #include <map>
 #include <utility>
 #include <memory>
-#include <SDL_image.h>
 #include <functional>
 #include <cassert>
+#include <ranges>
 
+#include "SDL_image.h"
 #include "chess_game.h"
 #include "SDL2_ttf/include/SDL_ttf.h"
 #include "SDL2/include/SDL.h"
 #include "code_utils.inc"
 
 USING_DDDELTA_INTDEF
+
 NAMESPACE_BOBZHENG00_START
 
 
@@ -62,7 +64,7 @@ class GUI {
         void render_capture(DDDelta::BoardCoor coor);
         void render_select(DDDelta::BoardCoor coor);
         void render_promote_selection(DDDelta::BoardCoor coor);
-//        void render_result(DDDelta::E_Result res);
+    //        void render_result(DDDelta::E_Result res);
         void player_init();
         void board_init();
         void set_hover(DDDelta::BoardCoor hover_coor);
@@ -81,9 +83,6 @@ class GUI {
         USurfacePtr _checked_tile;
         USurfacePtr _promote_shade;
         std::unique_ptr<TTF_Font, std::function<decltype(TTF_CloseFont)>> _font24;
-
-
-
 };
 
 

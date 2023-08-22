@@ -38,10 +38,8 @@ std::optional<E_UniqueAction> ChessGame::execute_move(BoardCoor target_coor) {
     auto all_legal_move_rng = moves | stdvw::join;
     auto it_move = stdrng::find_if(all_legal_move_rng, has_move);
 
-    bool is_legal = it_move != all_legal_move_rng.end();
-
     // if illegal move
-    if (!is_legal) {
+    if (it_move == all_legal_move_rng.end()) {
         LOG_TO_STDOUT("illegal execution");
         this->_selected = constant::INVALID_COOR;
         return nullopt;

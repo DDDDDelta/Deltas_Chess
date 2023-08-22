@@ -25,7 +25,7 @@ NAMESPACE_BOBZHENG00_START
 
 
 void Controller::_handle_mouse_move() {
-    if ((!_in_game) || (_opt_selected)) return;
+    if (!_in_game || _opt_selected) return;
 
     int mouse_x, mouse_y;
     SDL_GetMouseState(&mouse_x, &mouse_y);
@@ -242,6 +242,7 @@ void Controller::run() {
         }
 
     }
+
 Quit:
     return;
 }

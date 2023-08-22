@@ -28,7 +28,7 @@ struct colored_pair : std::pair<T, T> {
 
 
 template <i32 Distance> requires (Distance <= 8 && Distance >= 1)
-static constexpr colored_pair<i32> nth_from_last_rank { 0 + Distance, 9 - Distance };
+inline constexpr colored_pair<i32> nth_from_last_rank { 0 + Distance, 9 - Distance };
 
 
 namespace throwable {
@@ -49,7 +49,7 @@ public:
     NODISCARD inline
     OptPiece get_piece(BoardCoor coor) const { assert_on_board_coor(coor); return this->_board[coor.x - 1][coor.y - 1]; }
     NODISCARD inline
-    OptPiece get_piece(i32 x, i32 y) const { assert_on_board_xy(x, y); return this->_board[x - 1][y - 1]; };
+    OptPiece get_piece(i32 x, i32 y) const { assert_on_board_xy(x, y); return this->_board[x - 1][y - 1]; }
     NODISCARD PossibleMovement* get_move(BoardCoor coor) const;
     NODISCARD PossibleMovement* get_move(i32 x, i32 y) const;
     NODISCARD inline
@@ -95,5 +95,4 @@ private:
 
     friend throwable::pawn_promote;
 };
-
 NAMESPACE_DDDELTA_END

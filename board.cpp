@@ -86,8 +86,6 @@ static auto adap_remove_attacked(Board* self, E_Color color) {
 
 
 PossibleMovement* Board::_knight_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
-
     auto all_move = all_knight_movement(co);
     auto valid_move = all_move | adap_remove_off_board;
 
@@ -112,17 +110,15 @@ PossibleMovement* Board::_knight_move(BoardCoor co) const {
 
 
 PossibleMovement* Board::_diagonal_move(PossibleMovement* p_movement, BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
+    E_Color selected_color = this->get_piece(co)->color;
 
-    E_Color curr_color = this->get_piece(co)->color;
-
-    auto insert_move = [this, p_movement, curr_color](BoardCoor co) mutable {
+    auto insert_move = [this, p_movement, selected_color](BoardCoor co) mutable {
         if (!co.on_board()) {
             return false;
         } else if (this->is_empty_sqr(co)) {
             p_movement->moves.emplace_back(co, E_UniqueAction::None);
             return true;
-        } else if (this->get_piece(co)->color == curr_color) {
+        } else if (this->get_piece(co)->color == selected_color) {
             p_movement->protects.emplace_back(co, E_UniqueAction::None);
             return false;
         } else {
@@ -142,17 +138,15 @@ PossibleMovement* Board::_diagonal_move(PossibleMovement* p_movement, BoardCoor 
 
 
 PossibleMovement* Board::_linear_move(PossibleMovement* p_movement, BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
+    E_Color selected = this->get_piece(co)->color;
 
-    E_Color curr_color = this->get_piece(co)->color;
-
-    auto insert_move = [this, p_movement, curr_color](BoardCoor co) mutable {
+    auto insert_move = [this, p_movement, selected](BoardCoor co) mutable {
         if (!co.on_board()) {
             return false;
         } else if (this->is_empty_sqr(co)) {
             p_movement->moves.emplace_back(co, E_UniqueAction::None);
             return true;
-        } else if (this->get_piece(co)->color == curr_color) {
+        } else if (this->get_piece(co)->color == selected) {
             p_movement->protects.emplace_back(co, E_UniqueAction::None);
             return false;
         } else {
@@ -172,23 +166,18 @@ PossibleMovement* Board::_linear_move(PossibleMovement* p_movement, BoardCoor co
 
 
 PossibleMovement* Board::_bishop_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
-
     auto p_ret = new PossibleMovement;
     return this->_diagonal_move(p_ret, co);
 }
 
 
 PossibleMovement* Board::_rook_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
     auto p_ret = new PossibleMovement;
     return this->_linear_move(p_ret, co);
 }
 
 
 PossibleMovement* Board::_queen_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
-
     auto p_ret = new PossibleMovement;
     this->_linear_move(p_ret, co);
     this->_diagonal_move(p_ret, co);
@@ -197,7 +186,6 @@ PossibleMovement* Board::_queen_move(BoardCoor co) const {
 
 
 PossibleMovement* Board::_pawn_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
     assert(co.y != 1 && co.y != 8);
 
     E_Color selected_color = this->get_piece(co)->color;
@@ -250,9 +238,7 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
 
 // TODO: finish this
 PossibleMovement* Board::_king_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
-
-    E_Color color = this->get_piece(co)->color;
+    E_Color selected_color = this->get_piece(co)->color;
     auto all_move = all_king_movement(co);
     auto valid_move = all_move | adap_remove_off_board;
 
@@ -275,13 +261,13 @@ PossibleMovement* Board::_king_move(BoardCoor co) const {
     };
 
     BoardCoor short_castle_target = co + Vec2(2, 0);
-    if (this->_can_castle_short[color] &&
+    if (this->_can_castle_short[selected_color] &&
         this->is_empty_sqr(short_castle_target) &&
         this->is_empty_sqr(co + Vec2(1, 0)))
         ret->moves.emplace_back(short_castle_target, E_UniqueAction::ShortCastle);
 
     BoardCoor long_castle_target = co - Vec2(2, 0);
-    if (this->_can_castle_long[color] &&
+    if (this->_can_castle_long[selected_color] &&
         this->is_empty_sqr(co - Vec2(3, 0)) &&
         this->is_empty_sqr(short_castle_target) &&
         this->is_empty_sqr(co - Vec2(1, 0)))

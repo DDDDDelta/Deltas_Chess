@@ -9,17 +9,17 @@
 #include <map>
 #include <utility>
 #include <optional>
-#include <SDL_image.h>
 
 #include "chess_game.h"
 
+#include "SDL_image.h"
 #include "SDL2_ttf/include/SDL_ttf.h"
 #include "SDL2/include/SDL.h"
 #include "code_utils.inc"
 
 
 NAMESPACE_BOBZHENG00_START
-    class Controller {
+class Controller {
     public:
         std::optional<DDDelta::BoardCoor> opt_hover;
 

@@ -88,6 +88,7 @@ class pawn_promote {
 public:
     pawn_promote(Board* board, BoardCoor co, BoardCoor original);
     ~pawn_promote();
+    // this function is asserted to be called only once
     bool select_promotion(BoardCoor selection);
 
 private:
