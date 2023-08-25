@@ -37,8 +37,6 @@ enum class E_Result : u8 {
 };
 
 
-
-
 class ChessGame {
 public:
     ChessGame(Player&& pwhite, Player&& pblack);
@@ -54,7 +52,6 @@ public:
         else
             return this->_selected;
     }
-    NODISCARD inline BoardCoor in_check() const { return this->_board.in_check(); }
 
     const Player player_white;
     const Player player_black;
@@ -86,7 +83,7 @@ namespace throwable {
 class pawn_promote {
     // friend of Board
 public:
-    pawn_promote(Board* board, BoardCoor co, BoardCoor original);
+    pawn_promote(Board* board, BoardCoor co, BoardCoor original, E_Color* turn);
     ~pawn_promote();
     // this function is asserted to be called only once
     bool select_promotion(BoardCoor selection);
@@ -95,7 +92,7 @@ private:
     Board* _p_board;
     BoardCoor _target;
     BoardCoor _original;
-    E_Color _color;
+    E_Color* _turn;
     bool _used_flag = false;
 };
 

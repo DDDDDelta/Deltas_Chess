@@ -29,5 +29,7 @@ struct PossibleMovement {
     std::vector<PieceMove> moves;
     std::vector<PieceMove> captures;
     std::vector<PieceMove> protects;
+
+    NODISCARD inline bool unmoveable() const { return this->moves.empty() && this->captures.empty(); }
 };
 NAMESPACE_DDDELTA_END

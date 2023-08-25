@@ -22,8 +22,8 @@ static inline constexpr Board::ChessBoard_t starting_position {
 
 
 Board::Board() :
-    _board(starting_position), _can_castle_long(true, true), _can_castle_short(true, true),
-    _in_check(constant::INVALID_COOR), _last_double_pawn_move(constant::INVALID_COOR) {}
+    _board(starting_position), _can_castle_long(true, true), _can_castle_short(true, true), _king_pos({ 5, 1 }, { 5, 8 }),
+    _attackers(), _last_double_pawn_move(constant::INVALID_COOR) {}
 
 
 static inline std::array<BoardCoor, 8> all_king_movement(BoardCoor co) {
@@ -223,7 +223,9 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
 
     BoardCoor single_push = co + Vec2(0, direction);
     if (single_push.on_board() && this->is_empty_sqr(single_push))
-        p_ret->moves.emplace_back(single_push, E_UniqueAction::None);
+        p_ret->moves.emplace_back(single_push, single_push.y == promotion_rank ?
+                                               E_UniqueAction::Promote :
+                                               E_UniqueAction::None);
     else
         return p_ret;
 
@@ -255,7 +257,7 @@ PossibleMovement* Board::_king_move(BoardCoor co) const {
         | adap_to_piecemove;
 
     auto ret = new PossibleMovement {
-        { move_range.begin(), move_range.end() },
+        { move_range.begin(),    move_range.end()    },
         { capture_range.begin(), capture_range.end() },
         { protect_range.begin(), protect_range.end() }
     };
@@ -274,6 +276,15 @@ PossibleMovement* Board::_king_move(BoardCoor co) const {
         ret->moves.emplace_back(long_castle_target, E_UniqueAction::LongCastle);
 
     return ret;
+}
+
+
+bool Board::is_checkmated() const {
+    if (this->_attackers.attacker_count() != 0)
+        return std::unique_ptr<PossibleMovement>
+            (this->_king_move(this->_king_pos[this->_attacker()->color]))->unmoveable();
+
+    return false;
 }
 
 
@@ -312,6 +323,14 @@ PossibleMovement* Board::get_move(i32 x, i32 y) const {
 }
 
 
+bool Board::_under_attack(BoardCoor target, E_Color color) const {
+    BoardCoor king_pos = this->_king_pos[color];
+
+    auto knight_checks = all_knight_movement(king_pos);
+    auto it_enemy
+}
+
+
 BoardCoor Board::execute_move(BoardCoor selection, PieceMove piece_move) {
     assert(!this->is_empty_sqr(selection));
     assert_on_board_coor(selection);
@@ -327,6 +346,7 @@ BoardCoor Board::execute_move(BoardCoor selection, PieceMove piece_move) {
         case E_PieceType::King:
             this->_can_castle_short[color] = false;
             this->_can_castle_long[color]  = false;
+            this->_king_pos[color] = selection;
             break;
         case E_PieceType::Rook:
             if (selection == BoardCoor(1, nth_from_last_rank<1>[color]))
@@ -361,6 +381,21 @@ BoardCoor Board::execute_move(BoardCoor selection, PieceMove piece_move) {
 
     this->_get_piece_ref(selection).reset();
 
-    return this->_in_check = this->_is_in_check(color);
+    if (this->_update_attackers(color).attacker_count() != 0)
+        return this->_king_pos[!color];
+
+    return constant::INVALID_COOR;
+}
+
+
+Board::CheckingCoor& Board::CheckingCoor::add_attacker(BoardCoor coor) {
+    assert(this->attacker_count() < 2);
+
+    if (this->_first != constant::INVALID_COOR)
+        this->_first = coor;
+    else
+        this->_second = coor;
+
+    return *this;
 }
 NAMESPACE_DDDELTA_END

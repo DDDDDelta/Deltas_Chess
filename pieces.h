@@ -20,6 +20,7 @@ struct Vec2 {
     Vec2 operator +(Vec2 rhs) const;
     Vec2 operator -(Vec2 rhs) const;
     Vec2& operator +=(Vec2 rhs);
+    explicit operator bool() const;
 };
 
 

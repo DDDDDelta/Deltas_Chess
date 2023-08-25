@@ -50,7 +50,7 @@ std::optional<E_UniqueAction> ChessGame::execute_move(BoardCoor target_coor) {
         LOG_TO_STDOUT("promoting");
         BoardCoor temp = this->_selected;
         this->_selected = constant::INVALID_COOR;
-        throw throwable::pawn_promote(&this->_board, target_coor, temp);
+        throw throwable::pawn_promote(&this->_board, target_coor, temp, &this->_turn);
     }
 
     BoardCoor in_check_king_pos = this->_board.execute_move(this->_selected, *it_move);
@@ -73,8 +73,8 @@ std::optional<E_UniqueAction> ChessGame::execute_move(BoardCoor target_coor) {
 
 
 namespace throwable {
-pawn_promote::pawn_promote(Board* board, BoardCoor target, BoardCoor original) :
-    _p_board(board), _target(target), _original(original), _color(board->get_piece(this->_original)->color) {
+pawn_promote::pawn_promote(Board* board, BoardCoor target, BoardCoor original, E_Color* turn) :
+    _p_board(board), _target(target), _original(original), _turn(turn) {
     assert_on_board_coor(this->_original);
 
     LOG_TO_STDOUT("throwable constructed");
@@ -84,7 +84,9 @@ pawn_promote::pawn_promote(Board* board, BoardCoor target, BoardCoor original) :
 
 pawn_promote::~pawn_promote() {
     if (!this->_used_flag)
-        this->_p_board->_get_piece_ref(this->_original).emplace(this->_color, E_PieceType::Pawn);
+        this->_p_board->_get_piece_ref(this->_original).emplace(*this->_turn, E_PieceType::Pawn);
+    else
+        *this->_turn = !*this->_turn;
 }
 
 
@@ -97,19 +99,18 @@ bool pawn_promote::select_promotion(BoardCoor selection) {
     if (selection.x != this->_target.x)
         return false;
 
-    if (selection.y == nth_from_last_rank<8>[this->_color])
+    if (selection.y == nth_from_last_rank<8>[*this->_turn])
         type = E_PieceType::Queen;
-    else if (selection.y == nth_from_last_rank<7>[this->_color])
+    else if (selection.y == nth_from_last_rank<7>[*this->_turn])
         type = E_PieceType::Knight;
-    else if (selection.y == nth_from_last_rank<6>[this->_color])
+    else if (selection.y == nth_from_last_rank<6>[*this->_turn])
         type = E_PieceType::Rook;
-    else if (selection.y == nth_from_last_rank<5>[this->_color])
+    else if (selection.y == nth_from_last_rank<5>[*this->_turn])
         type = E_PieceType::Bishop;
     else
         return false;
 
-    this->_p_board->_get_piece_ref(this->_target) = Piece(this->_color, type);
-
+    this->_p_board->_get_piece_ref(this->_target) = Piece(*this->_turn, type);
     this->_used_flag = true;
     return true;
 }
