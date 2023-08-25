@@ -16,6 +16,7 @@
 USING_DDDELTA_INTDEF
 NAMESPACE_BOBZHENG00_START
 
+// first->white side, second->black side
 template <typename T>
 struct promotion_pair : std::pair<T, T> {
     inline constexpr promotion_pair(T first, T second) : std::pair<T, T>(first, second) {}
@@ -50,6 +51,7 @@ class GUI {
 
     private:
         using UTexturePtr = std::unique_ptr<SDL_Texture, std::function<decltype(SDL_DestroyTexture)>>;
+        using UFontPtr = std::unique_ptr<TTF_Font, std::function<decltype(TTF_CloseFont)>>;
         const DDDelta::ChessGame* _chess_game;
         std::optional<DDDelta::BoardCoor> _opt_hover;
         std::map<DDDelta::Piece, UTexturePtr> _texture_map;
@@ -62,8 +64,7 @@ class GUI {
         UTexturePtr _capture_texture;
         UTexturePtr _checked_texture;
         UTexturePtr _promote_texture;
-        std::unique_ptr<TTF_Font, std::function<decltype(TTF_CloseFont)>> _font24;
-
+        UFontPtr _font24;
 
 
 };
