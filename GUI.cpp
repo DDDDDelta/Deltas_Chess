@@ -1,6 +1,4 @@
 #include <iostream>
-#include "SDL2_ttf/include/SDL_ttf.h"
-#include <SDL.h>
 
 #include "GUI.h"
 #include "code_utils.inc"
@@ -14,6 +12,7 @@ GUI::GUI(const DDDelta::ChessGame* chess_game) :
         _select_texture(), _promote_texture(), _capture_texture(), _opt_hover(), _checked_texture(), _move_texture(), _font24()
 {
     // initialize SDL features
+    SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
     window = SDL_CreateWindow("Chess Game", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1100, 800, 0);
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
@@ -109,9 +108,9 @@ void GUI::render_select(DDDelta::BoardCoor coor){
 }
 
 
-void GUI::render_possible_moves(const std::shared_ptr<const DDDelta::PossibleMovement>& movement){
+void GUI::render_possible_moves(const std::shared_ptr<const DDDelta::PossibleMovement>& movement, std::optional<DDDelta::BoardCoor> opt_selected){
     // if a piece is selected, draw all the possible movements
-    if (_chess_game->get_selection()) {
+    if (opt_selected) {
         for (auto pm : movement->captures) {
             render_capture(pm.coor);
             render_piece(pm.coor);
@@ -144,41 +143,38 @@ void GUI::render_promote_selection(DDDelta::BoardCoor coor) {
     // based on whether the player has clicked the top rank or the bottom rank, draw the promote selection of correct side
     render_tile({ coor.x, y_position<1>[coor.y] }); //TODO: Add grey background circle
     image_rect = {(coor.x - 1)*100, (8 - y_position<1>[coor.y])*100, 100, 100};
-    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<1>[coor.y], DDDelta::E_PieceType::Queen }).get(), nullptr, &image_rect);
+    SDL_RenderCopy(renderer, _texture_map.at({ piece_color[coor.y], DDDelta::E_PieceType::Queen }).get(), nullptr, &image_rect);
 
     render_tile({ coor.x, y_position<2>[coor.y] });
     image_rect = { (coor.x - 1)*100, (8 - y_position<2>[coor.y])*100, 100, 100 };
-    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<2>[coor.y], DDDelta::E_PieceType::Knight }).get(), nullptr, &image_rect);
+    SDL_RenderCopy(renderer, _texture_map.at({ piece_color[coor.y], DDDelta::E_PieceType::Knight }).get(), nullptr, &image_rect);
 
     render_tile({ coor.x, y_position<3>[coor.y] });
     image_rect = { (coor.x - 1)*100, (8 - y_position<3>[coor.y])*100, 100, 100 };
-    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<3>[coor.y], DDDelta::E_PieceType::Rook }).get(), nullptr, &image_rect);
+    SDL_RenderCopy(renderer, _texture_map.at({ piece_color[coor.y], DDDelta::E_PieceType::Rook }).get(), nullptr, &image_rect);
 
     render_tile({ coor.x, y_position<4>[coor.y] });
     image_rect = {(coor.x - 1)*100, (8 - y_position<4>[coor.y])*100, 100, 100};
-    SDL_RenderCopy(renderer, _texture_map.at({ piece_color<4>[coor.y], DDDelta::E_PieceType::Bishop }).get(), nullptr, &image_rect);
+    SDL_RenderCopy(renderer, _texture_map.at({ piece_color[coor.y], DDDelta::E_PieceType::Bishop }).get(), nullptr, &image_rect);
 }
 
+
+void GUI::render_text(const std::string& text, SDL_Color text_color, i32 width, i32 height, _TTF_Font* font) {
+    SDL_Surface* surface = TTF_RenderText_Solid(font, text.c_str(), text_color);
+    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
+    SDL_Rect text_rect = {width, height, surface->w, surface->h};
+    SDL_RenderCopy(renderer, texture, nullptr, &text_rect);
+    SDL_DestroyTexture(texture);
+    SDL_FreeSurface(surface);
+}
 
 void GUI::player_init() {
     SDL_Color text_color = {255, 255, 255, 255};
     std::string player_black = _chess_game->player_black.name[0] + ' ' + _chess_game->player_black.name[1] + ' ' + _chess_game->player_black.name[2];
-    SDL_Surface* surface = TTF_RenderText_Solid(_font24.get(), player_black.c_str(), text_color);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-    SDL_Rect textRect = {850, 50, surface->w, surface->h};
-    SDL_RenderCopy(renderer, texture, nullptr, &textRect);
-
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(surface);
+    render_text(player_black, text_color, 850, 50, _font24.get());
 
     std::string player_white = _chess_game->player_white.name[0] + ' ' + _chess_game->player_white.name[1] + ' ' + _chess_game->player_white.name[2];
-    surface = TTF_RenderText_Solid(_font24.get(), player_white.c_str(), text_color);
-    texture = SDL_CreateTextureFromSurface(renderer, surface);
-    textRect = {850, 725, surface->w, surface->h};
-    SDL_RenderCopy(renderer, texture, nullptr, &textRect);
-
-    SDL_DestroyTexture(texture);
-    SDL_FreeSurface(surface);
+    render_text(player_white, text_color, 850, 750, _font24.get());
 }
 
 
@@ -201,13 +197,22 @@ void GUI::set_hover(DDDelta::BoardCoor hover_coor) {
     _opt_hover = hover_coor;
 }
 
-//void GUI::render_result(DDDelta::E_Result res){
-//    SDL_Surface *surface = TTF_RenderText_Solid(_font24.get(), _chess_game->player_white.name[0].c_str(), {255, 255, 255, 255});
-//    SDL_Texture *texture = SDL_CreateTextureFromSurface(renderer, surface);
-//    SDL_Rect textRect = {850, 387, surface->w, surface->h};
-//    SDL_RenderCopy(renderer, texture, nullptr, &textRect);
-//    // TODO: highlight winner and display result
-//}
+
+void GUI::render_result(DDDelta::E_Result res){
+    if (res == DDDelta::E_Result::DRAW) {
+        render_text("DRAW", {255, 255, 255, 255}, 900, 250, _font24.get());
+    } else {
+        render_text(result_text[res], {255, 255, 255, 255}, 875, 250, _font24.get());
+        std::string player_black = _chess_game->player_black.name[0] + ' ' + _chess_game->player_black.name[1] + ' ' + _chess_game->player_black.name[2];
+        render_text(player_black, result_color_black[res], 850, 50, _font24.get());
+
+        std::string player_white = _chess_game->player_white.name[0] + ' ' + _chess_game->player_white.name[1] + ' ' + _chess_game->player_white.name[2];
+        render_text(player_white, result_color_white[res], 850, 750, _font24.get());
+    }
+    render_text("1. Switch Side", {255, 255, 255, 255}, 850, 300, _font24.get());
+    render_text("2. Restart Game", {255, 255, 255, 255}, 850, 350, _font24.get());
+    render_text("3. Quit", {255, 255, 255, 255}, 850, 400, _font24.get());
+}
 
 NAMESPACE_BOBZHENG00_END
 
