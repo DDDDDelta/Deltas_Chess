@@ -19,7 +19,7 @@ enum class E_UniqueAction : u8 {
 
 
 struct PieceMove {
-    PieceMove(BoardCoor co, E_UniqueAction action) : coor(co), unique_action(action) {}
+    constexpr PieceMove(BoardCoor co, E_UniqueAction action) : coor(co), unique_action(action) {}
     BoardCoor coor;
     E_UniqueAction unique_action;
 };

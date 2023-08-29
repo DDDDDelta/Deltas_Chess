@@ -17,14 +17,33 @@
 
 NAMESPACE_DDDELTA_START
 using OptPiece = std::optional<Piece>;
+using RawBoard = std::array<std::array<OptPiece, 8>, 8>;
+
+
+namespace _impl {
+template <E_PieceType Type>
+inline constexpr std::array<std::optional<Piece>, 8> init_board_file {
+    Piece(E_Color::White, Type), constant::WhitePawn, nullopt, nullopt,
+    nullopt, nullopt, constant::BlackPawn, Piece(E_Color::Black, Type)
+};
+}
+
+
+inline constexpr RawBoard standard_starting_position {
+    _impl::init_board_file<E_PieceType::Rook>,
+    _impl::init_board_file<E_PieceType::Knight>,
+    _impl::init_board_file<E_PieceType::Bishop>,
+    _impl::init_board_file<E_PieceType::Queen>,
+    _impl::init_board_file<E_PieceType::King>,
+    _impl::init_board_file<E_PieceType::Bishop>,
+    _impl::init_board_file<E_PieceType::Knight>,
+    _impl::init_board_file<E_PieceType::Rook>
+};
 
 
 class Board {
 public:
-    using ChessBoard_t = std::array<std::array<OptPiece, 8>, 8>;
-
-public:
-    Board();
+    Board(const RawBoard& board);
 
     NODISCARD inline
     OptPiece get(BoardCoor coor) const { assert_on_board_coor(coor); return this->_board[coor.x - 1][coor.y - 1]; }
@@ -43,6 +62,6 @@ public:
     auto board_range() const { return this->_board | stdvw::join; }
 
 private:
-    ChessBoard_t _board;
+    RawBoard _board;
 };
 NAMESPACE_DDDELTA_END
