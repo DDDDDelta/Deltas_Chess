@@ -21,6 +21,7 @@
 #include "board_operator.h"
 #include "move_factory.h"
 #include "variants.h"
+#include "special_cases.h"
 #include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
@@ -32,29 +33,85 @@ class I_ChessGame {
 };
 
 
-template <chess_variant V>
+// template <chess_variant V>
 class NewChessGame : public I_ChessGame {
+    using V = variant::Standard;
 public:
     NewChessGame(const Player& p1, const Player& p2) :
         _turn(E_Color::White), _selected(constant::INVALID_COOR), _board(V::starting_position),
-        _game_status(p1, p2), _board_operator(&_board), _board_factory(_board, _turn), _sp_possible_move(nullptr) {}
+        _game_status(p1, p2), _board_operator(&_board), _move_factory(_board, _turn), _sp_possible_move(nullptr) {}
 
     NODISCARD inline const Board& board() const override { return this->_board; }
     NODISCARD inline const GameStatus& status() const override { return this->_game_status; }
 
     // operators
     /*
-     * returns nullptr if selection is illegal
+     * returns std::shared_ptr bound to nullptr if selection is illegal
      * modifies _selected if legal
      */
-    std::shared_ptr<const PossibleMovement> select_piece(BoardCoor co) override;
+    std::shared_ptr<const PossibleMovement> select_piece(BoardCoor co) override {
+        assert(this->_selected == constant::INVALID_COOR);
+
+        // if the selection is illegal
+        if (!this->_board.get(co) || this->_board.get(co)->color != this->_turn) {
+            LOG_TO_STDOUT("illegal selection");
+            this->_sp_possible_move.reset();
+            return this->_sp_possible_move;
+        }
+
+        LOG_TO_STDOUT("piece selected");
+        this->_sp_possible_move.reset(this->_move_factory.get_move(co));
+        if (this->_sp_possible_move) {
+            LOG_TO_STDOUT("legal selection");
+            this->_selected = co;
+        }
+
+        return this->_sp_possible_move;
+    }
     /*
      * returns std::nullopt if execution is illegal
      * returns E_UniqueAction according to executed move
      * throws throwable::pawn_promote(this, target_coor) if the move is a pawn promotion
      * throws throwable::game_end if one side is checkmated or the game ended in a draw
      */
-    std::optional<E_UniqueAction> execute_move(BoardCoor target_coor) noexcept(false) override;
+    std::optional<E_UniqueAction> execute_move(BoardCoor target_coor) noexcept(false) override {
+        assert(target_coor.on_board());
+        assert(this->_selected != constant::INVALID_COOR);
+
+        LOG_TO_STDOUT("executing move");
+        auto has_move = [target_coor](PieceMove pm) { return pm.coor == target_coor; };
+        auto moves = { this->_sp_possible_move->moves, this->_sp_possible_move->captures }; // FIXME: unnecessary copying
+        auto all_legal_move_rng = moves | stdvw::join;
+        auto it_move = stdrng::find_if(all_legal_move_rng, has_move);
+
+        // if illegal move
+        if (it_move == all_legal_move_rng.end()) {
+            LOG_TO_STDOUT("illegal execution");
+            this->_selected = constant::INVALID_COOR;
+            return nullopt;
+        }
+
+        try {
+            this->_board_operator.execute_move(this->_selected, *it_move);
+        } catch (DDDelta::throwable::special_case_base& special_case) {
+            this->_turn = !this->_turn;
+            this->_selected = constant::INVALID_COOR;
+            throw
+        }
+
+        if (this->_board.is_checkmated()) {
+            LOG_TO_STDOUT("checkmated");
+            this->_res = to_underlying(this->_turn) ? E_Result::WHITE_WIN : E_Result::BLACK_WIN;
+            throw throwable::game_end(in_check_king_pos, this->_res);
+        }
+
+        LOG_TO_STDOUT("next turn");
+        this->_turn = !this->_turn;
+        LOG_TO_STDOUT("resetting selection");
+        this->_selected = constant::INVALID_COOR; // added 2023/8/18
+
+        return it_move->unique_action;
+    }
 
 private:
     using Operator = V::Operator;
@@ -66,34 +123,10 @@ private:
     Board _board;
     GameStatus _game_status;
     Operator _board_operator;
-    Factory _board_factory;
+    Factory _move_factory;
     std::shared_ptr<PossibleMovement> _sp_possible_move;
 };
 
 
-namespace throwable {
-class pawn_promote {
-    // friend of Board
-public:
-    pawn_promote(Board* board, BoardCoor co, BoardCoor original, E_Color* turn);
-    ~pawn_promote();
-    // this function is asserted to be called only once
-    bool select_promotion(BoardCoor selection);
 
-private:
-    Board* _p_board;
-    BoardCoor _target;
-    BoardCoor _original;
-    E_Color* _turn;
-    bool _used_flag = false;
-};
-
-
-class game_end {
-public:
-    game_end(BoardCoor in_check, E_Result res);
-    BoardCoor king_pos;
-    E_Result res;
-};
-}
 NAMESPACE_DDDELTA_END

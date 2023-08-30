@@ -3,7 +3,7 @@ project(Deltas_Chess)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(Deltas_Chess main.cpp chess_game.cpp chess_game.h pieces.cpp pieces.h code_utils.inc player.h moves.cpp moves.h GUI.h GUI.cpp board.cpp board.h controller.cpp controller.h new_board.cpp new_board.h game_status.cpp game_status.h new_chess_game.cpp new_chess_game.h board_operator.cpp board_operator.h move_factory.cpp move_factory.h variants.h)
+add_executable(Deltas_Chess main.cpp chess_game.cpp chess_game.h pieces.cpp pieces.h code_utils.inc player.h moves.cpp moves.h GUI.h GUI.cpp board.cpp board.h controller.cpp controller.h new_board.cpp new_board.h game_status.cpp game_status.h new_chess_game.cpp new_chess_game.h board_operator.cpp board_operator.h move_factory.cpp move_factory.h variants.h special_cases.cpp special_cases.h)
 
 set(SDL2_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/include)
 set(SDL2_LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/lib/x64)

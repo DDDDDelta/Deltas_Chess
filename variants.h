@@ -16,8 +16,7 @@ inline constexpr PieceMove valid_move { valid_coor, E_UniqueAction::None };
 
 template <typename T>
 concept has_starting_board = requires {
-    T::starting_position;
-    std::same_as<decltype(T::starting_position), RawBoard>;
+    { T::starting_position } -> std::same_as<RawBoard>;
 };
 
 
@@ -36,9 +35,9 @@ concept is_valid_operator = requires(Operator o) {
 
 
 template <typename Factory>
-concept is_valid_factory = requires(Factory o) {
+concept is_valid_factory = requires(Factory f) {
     std::constructible_from<Factory, const Board&, const E_Color&>;
-    { o.get_move(valid_coor) } -> std::same_as<PossibleMovement*>;
+    { f.get_move(valid_coor) } -> std::same_as<PossibleMovement*>;
 };
 } // namespace _impl
 
