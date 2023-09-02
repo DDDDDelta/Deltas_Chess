@@ -210,6 +210,48 @@ bool Controller::_handle_promote(SDL_Event promote, DDDelta::throwable::pawn_pro
 
 E_AfterGameDecision Controller::_handle_result() {
     _gui->render_result(_chess_game->get_result());
+//    _gui->render_result(DDDelta::E_Result::BLACK_WIN);
+
+    SDL_Event result;
+    while (true) {
+        SDL_RenderPresent(_gui->renderer);
+        SDL_WaitEvent(&result);
+        int mouse_x, mouse_y;
+        SDL_GetMouseState(&mouse_x, &mouse_y);
+
+        switch (result.type) {
+            case(SDL_QUIT):
+                return E_AfterGameDecision::Quit;
+            case(SDL_MOUSEMOTION):
+                if ((mouse_x >= 850) && (mouse_x <=1000) && (mouse_y >= 300) && (mouse_y <= 325)) {
+                    _gui->render_finish_selection({250, 147, 152, 255}, {255, 255, 255, 255}, {255, 255, 255, 255});
+                } else if ((mouse_x >= 850) && (mouse_x <=1050) && (mouse_y >= 350) && (mouse_y <= 375)) {
+                    _gui->render_finish_selection({255, 255, 255, 255}, {250, 147, 152, 255}, {255, 255, 255, 255});
+                } else if ((mouse_x >= 850) && (mouse_x <=950) && (mouse_y >= 400) && (mouse_y <= 425)) {
+                    _gui->render_finish_selection({255, 255, 255, 255}, {255, 255, 255, 255}, {250, 147, 152, 255});
+                } else {
+                    _gui->render_finish_selection({255, 255, 255, 255}, {255, 255, 255, 255}, {255, 255, 255, 255});
+                }
+                break;
+            case(SDL_MOUSEBUTTONDOWN):
+                if (result.button.button == SDL_BUTTON_LEFT) {
+                    if ((mouse_x >= 850) && (mouse_x <=1000) && (mouse_y >= 300) && (mouse_y <= 325)) {
+                        _gui->render_finish_selection({250, 147, 152, 255}, {255, 255, 255, 255}, {255, 255, 255, 255});
+                        std::cout << "clicking switch side" << "\n";
+                        return E_AfterGameDecision::Switch;
+                    } else if ((mouse_x >= 850) && (mouse_x <=1050) && (mouse_y >= 350) && (mouse_y <= 375)) {
+                        _gui->render_finish_selection({255, 255, 255, 255}, {250, 147, 152, 255}, {255, 255, 255, 255});
+                        std::cout << "clicking restart game" << "\n";
+                        return E_AfterGameDecision::Restart;
+                    } else if ((mouse_x >= 850) && (mouse_x <=950) && (mouse_y >= 400) && (mouse_y <= 425)) {
+                        _gui->render_finish_selection({255, 255, 255, 255}, {255, 255, 255, 255}, {250, 147, 152, 255});
+                        std::cout << "Quit" << "\n";
+                        return E_AfterGameDecision::Quit;
+                    }
+                }
+                break;
+        }
+    }
     // TODO: wait for player's choice to quit or restart the game
 }
 

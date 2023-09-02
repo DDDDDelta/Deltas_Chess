@@ -5,7 +5,7 @@
 #include "controller.h"
 
 int main(int argc, char* argv[]) {
-    DDDelta::ChessGame chess_game { DDDelta::Player { "3", "2", "1" }, DDDelta::Player { "1", "2", "3" } };
+    DDDelta::ChessGame chess_game { DDDelta::Player { "Bob", "Shit", "Zheng" , 1, "liangtuoshi"}, DDDelta::Player { "Steven", "DDDelta", "Shi", 1, "yituoshi"} };
     BobZheng00::GUI GUI = BobZheng00::GUI(&chess_game);
     BobZheng00::Controller controller = BobZheng00::Controller(&GUI, &chess_game);
     controller.run();

@@ -7,6 +7,7 @@
 #include <functional>
 #include <cassert>
 
+#include "layer.h"
 #include "chess_game.h"
 #include "SDL_image.h"
 #include "SDL_ttf.h"
@@ -57,6 +58,9 @@ class GUI {
         void render_promote_selection(DDDelta::BoardCoor coor);
         void render_text(const std::string& text, SDL_Color text_color, i32 width, i32 height, _TTF_Font* font);
         void render_result(DDDelta::E_Result res);
+        void render_black_player(SDL_Color name_color);
+        void render_white_player(SDL_Color name_color);
+        void render_finish_selection(SDL_Color color1, SDL_Color color2, SDL_Color color3);
         void player_init();
         void board_init();
         void set_hover(DDDelta::BoardCoor hover_coor);
@@ -68,6 +72,7 @@ class GUI {
         std::optional<DDDelta::BoardCoor> _opt_hover;
         std::map<DDDelta::Piece, UTexturePtr> _texture_map;
 
+        SDL_Texture* _hover_ptr;
         UTexturePtr _move_texture;
         UTexturePtr _white_texture;
         UTexturePtr _black_texture;
@@ -77,6 +82,7 @@ class GUI {
         UTexturePtr _checked_texture;
         UTexturePtr _promote_texture;
         UFontPtr _font24;
+        BoardLayers _board_layer;
 
 
 };

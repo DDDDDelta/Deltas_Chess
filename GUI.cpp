@@ -1,5 +1,6 @@
 #include <iostream>
 
+
 #include "GUI.h"
 #include "code_utils.inc"
 
@@ -9,8 +10,7 @@
 NAMESPACE_BOBZHENG00_START
 GUI::GUI(const DDDelta::ChessGame* chess_game) :
         _texture_map(), _chess_game(chess_game), window(), renderer(), _white_texture(), _black_texture(), _hover_texture(),
-        _select_texture(), _promote_texture(), _capture_texture(), _opt_hover(), _checked_texture(), _move_texture(), _font24()
-{
+        _select_texture(), _promote_texture(), _capture_texture(), _opt_hover(), _checked_texture(), _move_texture(), _font24(), _board_layer() {
     // initialize SDL features
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
@@ -18,34 +18,59 @@ GUI::GUI(const DDDelta::ChessGame* chess_game) :
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     // load pieces' textures in to a map using Piece Type as keys
-    _texture_map[DDDelta::constant::WhitePawn] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wP.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::WhiteKnight] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wN.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::WhiteBishop] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wB.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::WhiteRook] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wR.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::WhiteQueen] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wQ.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::WhiteKing] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wK.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::BlackPawn] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bP.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::BlackKnight] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bN.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::BlackBishop] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bB.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::BlackRook] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bR.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::BlackQueen] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bQ.png")), SDL_DestroyTexture };
-    _texture_map[DDDelta::constant::BlackKing] = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bK.png")), SDL_DestroyTexture };
+    _texture_map[DDDelta::constant::WhitePawn] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wP.png")),
+                                                  SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::WhiteKnight] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wN.png")),
+                                                    SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::WhiteBishop] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wB.png")),
+                                                    SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::WhiteRook] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wR.png")),
+                                                  SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::WhiteQueen] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wQ.png")),
+                                                   SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::WhiteKing] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/wK.png")),
+                                                  SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::BlackPawn] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bP.png")),
+                                                  SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::BlackKnight] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bN.png")),
+                                                    SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::BlackBishop] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bB.png")),
+                                                    SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::BlackRook] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bR.png")),
+                                                  SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::BlackQueen] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bQ.png")),
+                                                   SDL_DestroyTexture};
+    _texture_map[DDDelta::constant::BlackKing] = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/bK.png")),
+                                                  SDL_DestroyTexture};
 
     // load board related textures and fonts as unique pointers
-    _white_texture = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/whiteT.png")), SDL_DestroyTexture };
-    _black_texture = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/blackT.png")), SDL_DestroyTexture };
-    _hover_texture = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/hoverT.png")), SDL_DestroyTexture };
-    _select_texture = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/selectT.png")), SDL_DestroyTexture };
-    _move_texture = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/moveT.png")), SDL_DestroyTexture };
-    _capture_texture = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/captureT.png")), SDL_DestroyTexture };
-    _promote_texture = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/promoteB.png")), SDL_DestroyTexture };
-    _checked_texture = { SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/checkedT.png")), SDL_DestroyTexture };
+    _white_texture = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/whiteT.png")), SDL_DestroyTexture};
+    _black_texture = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/blackT.png")), SDL_DestroyTexture};
+    _hover_texture = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/hoverT.png")), SDL_DestroyTexture};
+    _select_texture = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/selectT.png")), SDL_DestroyTexture};
+    _move_texture = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/moveT.png")), SDL_DestroyTexture};
+    _capture_texture = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/captureT.png")), SDL_DestroyTexture};
+    _promote_texture = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/promoteB.png")), SDL_DestroyTexture};
+    _checked_texture = {SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/checkedT.png")), SDL_DestroyTexture};
     _font24 = {TTF_OpenFont("../font.ttf", 24), TTF_CloseFont};
+
+    _hover_ptr = SDL_CreateTextureFromSurface(renderer, IMG_Load("../imgs/hoverT.png"));
 
     // reset private optional variables
     _opt_hover.reset();
-}
 
+    // test board layer
+
+    for(int i = 0; i < 8; i++)
+    {
+        for(int j = 0; j < 8; j++)
+        {
+            _board_layer.board_layers[i].emplace(_board_layer.board_layers[i].begin() + j, BoardLayers::Square(_hover_ptr), BoardLayers::Square(
+                    nullptr), BoardLayers::Square(nullptr), BoardLayers::Square(nullptr));
+
+        }
+    }
+}
 
 /* all the coor parameters are meant to taking in algebraic notations of Chess with bottom-left corner named as (1, 1) */
 
@@ -64,7 +89,7 @@ void GUI::render_tile(DDDelta::BoardCoor coor) {
     if (_opt_hover) {
         player_init();
         SDL_Rect image_rect = { (coor.x - 1) * 100, (8 - coor.y) * 100, 100, 100 };
-        SDL_RenderCopy(renderer, _hover_texture.get(), nullptr,&image_rect);
+        SDL_RenderCopy(renderer, _board_layer.board_layers[coor.x-1][coor.y-1].square_stack[0].square_ptr, nullptr,&image_rect);
         _opt_hover.reset();
         return;
     }
@@ -169,12 +194,26 @@ void GUI::render_text(const std::string& text, SDL_Color text_color, i32 width, 
 }
 
 void GUI::player_init() {
-    SDL_Color text_color = {255, 255, 255, 255};
-    std::string player_black = _chess_game->player_black.name[0] + ' ' + _chess_game->player_black.name[1] + ' ' + _chess_game->player_black.name[2];
-    render_text(player_black, text_color, 850, 50, _font24.get());
+    render_black_player({255, 255, 255, 255});
 
+    render_white_player({255, 255, 255, 255});
+
+}
+
+
+void GUI::render_black_player(SDL_Color name_color) {
+    std::string player_black = _chess_game->player_black.name[0] + ' ' + _chess_game->player_black.name[1] + ' ' + _chess_game->player_black.name[2];
+    render_text(_chess_game->player_black.title, {255, 255, 255, 255}, 850, 50, _font24.get());
+    render_text(player_black, name_color, 850, 75, _font24.get());
+    render_text(std::to_string(_chess_game->player_black.rating), {255, 255, 255, 255}, 850, 100, _font24.get());
+}
+
+
+void GUI::render_white_player(SDL_Color name_color) {
     std::string player_white = _chess_game->player_white.name[0] + ' ' + _chess_game->player_white.name[1] + ' ' + _chess_game->player_white.name[2];
-    render_text(player_white, text_color, 850, 750, _font24.get());
+    render_text(_chess_game->player_white.title, {255, 255, 255, 255}, 850, 700, _font24.get());
+    render_text(player_white, name_color, 850, 725, _font24.get());
+    render_text(std::to_string(_chess_game->player_white.rating), {255, 255, 255, 255}, 850, 750, _font24.get());
 }
 
 
@@ -192,6 +231,7 @@ void GUI::board_init() {
 
 }
 
+
 // provide a setter for controller to record the hovered tile
 void GUI::set_hover(DDDelta::BoardCoor hover_coor) {
     _opt_hover = hover_coor;
@@ -203,15 +243,18 @@ void GUI::render_result(DDDelta::E_Result res){
         render_text("DRAW", {255, 255, 255, 255}, 900, 250, _font24.get());
     } else {
         render_text(result_text[res], {255, 255, 255, 255}, 875, 250, _font24.get());
-        std::string player_black = _chess_game->player_black.name[0] + ' ' + _chess_game->player_black.name[1] + ' ' + _chess_game->player_black.name[2];
-        render_text(player_black, result_color_black[res], 850, 50, _font24.get());
-
-        std::string player_white = _chess_game->player_white.name[0] + ' ' + _chess_game->player_white.name[1] + ' ' + _chess_game->player_white.name[2];
-        render_text(player_white, result_color_white[res], 850, 750, _font24.get());
+        render_black_player(result_color_black[res]);
+        render_white_player(result_color_white[res]);
     }
     render_text("1. Switch Side", {255, 255, 255, 255}, 850, 300, _font24.get());
     render_text("2. Restart Game", {255, 255, 255, 255}, 850, 350, _font24.get());
     render_text("3. Quit", {255, 255, 255, 255}, 850, 400, _font24.get());
+}
+
+void GUI::render_finish_selection(SDL_Color color1, SDL_Color color2, SDL_Color color3) {
+    render_text("1. Switch Side", color1, 850, 300, _font24.get());
+    render_text("2. Restart Game", color2, 850, 350, _font24.get());
+    render_text("3. Quit", color3, 850, 400, _font24.get());
 }
 
 NAMESPACE_BOBZHENG00_END
