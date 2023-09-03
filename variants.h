@@ -5,7 +5,10 @@
 
 #include "pieces.h"
 #include "moves.h"
+#include "move_factory.h"
+#include "board_operator.h"
 #include "new_board.h"
+#include "chess_game_interface.h"
 #include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START

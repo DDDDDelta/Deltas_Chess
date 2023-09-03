@@ -3,15 +3,16 @@
 
 #include <optional>
 
-#include "board.h"
+#include "new_board.h"
 #include "moves.h"
+#include "chess_game_interface.h"
 #include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
 class StandardBoardOperator {
 public:
-    StandardBoardOperator(Board* p_board);
-    Piece execute_move(BoardCoor selection, PieceMove move);
+    explicit StandardBoardOperator(Board* p_board) : _p_board(p_board) {}
+    Piece execute_move(BoardCoor selection, PieceMove piece_move, I_ChessGame* p_game);
 
 private:
     Board* _p_board;

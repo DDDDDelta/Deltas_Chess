@@ -24,6 +24,7 @@ public:
 
     const Player player_white;
     const Player player_black;
+    E_Color turn;
     E_Result res;
 };
 NAMESPACE_DDDELTA_END

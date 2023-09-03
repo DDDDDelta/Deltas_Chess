@@ -41,6 +41,18 @@ inline constexpr RawBoard standard_starting_position {
 };
 
 
+template <typename T>
+struct colored_pair : std::pair<T, T> {
+    inline constexpr colored_pair(T first, T second) : std::pair<T, T>(first, second) {}
+    inline constexpr T& operator [](E_Color color) { return to_underlying(color) ? this->first : this->second; }
+    inline constexpr const T& operator [](E_Color color) const { return to_underlying(color) ? this->first : this->second; }
+};
+
+
+template <i32 Distance> requires (Distance <= 8 && Distance >= 1)
+inline constexpr colored_pair<i32> nth_from_last_rank { 0 + Distance, 9 - Distance };
+
+
 class Board {
 public:
     Board(const RawBoard& board);

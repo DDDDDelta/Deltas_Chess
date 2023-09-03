@@ -21,18 +21,11 @@
 #include "board_operator.h"
 #include "move_factory.h"
 #include "variants.h"
+#include "chess_game_interface.h"
 #include "special_cases.h"
 #include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
-class I_ChessGame {
-    virtual const Board& board() const = 0;
-    virtual const GameStatus& status() const = 0;
-    virtual std::shared_ptr<const PossibleMovement> select_piece(BoardCoor co) = 0;
-    virtual std::optional<E_UniqueAction> execute_move(BoardCoor target_coor) = 0;
-};
-
-
 // template <chess_variant V>
 class NewChessGame : public I_ChessGame {
     using V = variant::Standard;
@@ -80,8 +73,10 @@ public:
 
         LOG_TO_STDOUT("executing move");
         auto has_move = [target_coor](PieceMove pm) { return pm.coor == target_coor; };
-        auto moves = { this->_sp_possible_move->moves, this->_sp_possible_move->captures }; // FIXME: unnecessary copying
-        auto all_legal_move_rng = moves | stdvw::join;
+        auto moves = { &this->_sp_possible_move->moves, &this->_sp_possible_move->captures }; // FIXME: unnecessary copying
+        auto all_legal_move_rng = moves
+            | stdvw::transform([](std::vector<PieceMove>* v) -> const std::vector<PieceMove>& { return *v; })
+            | stdvw::join;
         auto it_move = stdrng::find_if(all_legal_move_rng, has_move);
 
         // if illegal move
@@ -91,26 +86,22 @@ public:
             return nullopt;
         }
 
-        try {
-            this->_board_operator.execute_move(this->_selected, *it_move);
-        } catch (DDDelta::throwable::special_case_base& special_case) {
-            this->_turn = !this->_turn;
-            this->_selected = constant::INVALID_COOR;
-            throw
-        }
+        // may throw derived class of throwable::special_case_base and transfer the control to the thrown object
+        this->_board_operator.execute_move(this->_selected, *it_move, this);
 
-        if (this->_board.is_checkmated()) {
-            LOG_TO_STDOUT("checkmated");
-            this->_res = to_underlying(this->_turn) ? E_Result::WHITE_WIN : E_Result::BLACK_WIN;
-            throw throwable::game_end(in_check_king_pos, this->_res);
-        }
-
-        LOG_TO_STDOUT("next turn");
-        this->_turn = !this->_turn;
-        LOG_TO_STDOUT("resetting selection");
-        this->_selected = constant::INVALID_COOR; // added 2023/8/18
+        this->_next_round();
 
         return it_move->unique_action;
+    }
+
+protected:
+    E_Color _next_round() override {
+        LOG_TO_STDOUT("next turn");
+        this->_turn = !this->_turn;
+
+        LOG_TO_STDOUT("resetting selection");
+        this->_selected = constant::INVALID_COOR;
+        return this->_turn;
     }
 
 private:
@@ -126,7 +117,6 @@ private:
     Factory _move_factory;
     std::shared_ptr<PossibleMovement> _sp_possible_move;
 };
-
 
 
 NAMESPACE_DDDELTA_END
