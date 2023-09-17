@@ -3,21 +3,21 @@
 
 NAMESPACE_DDDELTA_START
 template <E_PieceType Type>
-static inline constexpr std::array<std::optional<Piece>, 8> board_file {
+static inline constexpr std::array<std::optional<Piece>, 8> init_board_file {
     Piece(E_Color::White, Type), constant::WhitePawn, nullopt, nullopt,
     nullopt, nullopt, constant::BlackPawn, Piece(E_Color::Black, Type)
 };
 
 
 static inline constexpr Board::ChessBoard_t starting_position {
-    board_file<E_PieceType::Rook>,
-    board_file<E_PieceType::Knight>,
-    board_file<E_PieceType::Bishop>,
-    board_file<E_PieceType::Queen>,
-    board_file<E_PieceType::King>,
-    board_file<E_PieceType::Bishop>,
-    board_file<E_PieceType::Knight>,
-    board_file<E_PieceType::Rook>
+    init_board_file<E_PieceType::Rook>,
+    init_board_file<E_PieceType::Knight>,
+    init_board_file<E_PieceType::Bishop>,
+    init_board_file<E_PieceType::Queen>,
+    init_board_file<E_PieceType::King>,
+    init_board_file<E_PieceType::Bishop>,
+    init_board_file<E_PieceType::Knight>,
+    init_board_file<E_PieceType::Rook>
 };
 
 
@@ -119,7 +119,7 @@ PossibleMovement* Board::_diagonal_move(PossibleMovement* p_movement, BoardCoor 
     auto insert_move = [this, p_movement, curr_color](BoardCoor co) mutable {
         if (!co.on_board()) {
             return false;
-        } else if (this->get_piece(co)) {
+        } else if (this->is_empty_sqr(co)) {
             p_movement->moves.emplace_back(co, E_UniqueAction::None);
             return true;
         } else if (this->get_piece(co)->color == curr_color) {
@@ -132,10 +132,10 @@ PossibleMovement* Board::_diagonal_move(PossibleMovement* p_movement, BoardCoor 
     };
 
     BoardCoor
-    curr = co;    while (insert_move(curr += Vec2(1,1)));
-    curr = co;    while (insert_move(curr += Vec2(1,-1)));
-    curr = co;    while (insert_move(curr += Vec2(-1,-1)));
-    curr = co;    while (insert_move(curr += Vec2(-1,1)));
+    curr = co;    while (insert_move(curr += Vec2(1, 1)));
+    curr = co;    while (insert_move(curr += Vec2(1, -1)));
+    curr = co;    while (insert_move(curr += Vec2(-1, -1)));
+    curr = co;    while (insert_move(curr += Vec2(-1, 1)));
 
     return p_movement;
 }
@@ -149,7 +149,7 @@ PossibleMovement* Board::_linear_move(PossibleMovement* p_movement, BoardCoor co
     auto insert_move = [this, p_movement, curr_color](BoardCoor co) mutable {
         if (!co.on_board()) {
             return false;
-        } else if (this->get_piece(co)) {
+        } else if (this->is_empty_sqr(co)) {
             p_movement->moves.emplace_back(co, E_UniqueAction::None);
             return true;
         } else if (this->get_piece(co)->color == curr_color) {
@@ -163,9 +163,9 @@ PossibleMovement* Board::_linear_move(PossibleMovement* p_movement, BoardCoor co
 
     BoardCoor
     curr = co;     while (insert_move(curr += Vec2(1, 0)));
-    curr = co;     while (insert_move(curr += Vec2(-1,0)));
+    curr = co;     while (insert_move(curr += Vec2(-1, 0)));
     curr = co;     while (insert_move(curr += Vec2(0, 1)));
-    curr = co;     while (insert_move(curr += Vec2(0,-1)));
+    curr = co;     while (insert_move(curr += Vec2(0, -1)));
 
     return p_movement;
 }
@@ -202,9 +202,9 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
 
     E_Color selected_color = this->get_piece(co)->color;
     i32 direction = to_underlying(selected_color) ? 1 : -1;
-    i32 promotion_rank = to_underlying(selected_color) ? 8 : 1;
-    i32 initial_rank = to_underlying(selected_color) ? 2 : 7;
-    i32 en_passant_rank = to_underlying(selected_color) ? 5 : 4;
+    i32 promotion_rank = nth_from_last_rank<8>[selected_color];
+    i32 initial_rank = nth_from_last_rank<2>[selected_color];
+    i32 en_passant_rank = nth_from_last_rank<5>[selected_color];
 
     std::array<BoardCoor, 2> diagonal {
         BoardCoor(co.x + 1, co.y + direction),
@@ -215,7 +215,9 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
 
     for (BoardCoor coor : diagonal | adap_remove_off_board) {
         if (this->is_empty_sqr(coor)) {
-            if (coor.y == en_passant_rank && this->_last_double_pawn_move.x == coor.x)
+            LOG_TO_STDOUT("last double pawn move:");
+            LOG_TO_STDOUT(this->_last_double_pawn_move.x);
+            if (co.y == en_passant_rank && this->_last_double_pawn_move.x == coor.x)
                 p_ret->captures.emplace_back(coor, E_UniqueAction::EnPassant);
 
             continue;
@@ -233,14 +235,14 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
 
     BoardCoor single_push = co + Vec2(0, direction);
     if (single_push.on_board() && this->is_empty_sqr(single_push))
-        p_ret->moves.emplace_back(co, E_UniqueAction::None);
+        p_ret->moves.emplace_back(single_push, E_UniqueAction::None);
     else
         return p_ret;
 
     BoardCoor double_push = co + Vec2(0, 2 * direction);
     if (co.y == initial_rank &&
         this->is_empty_sqr(double_push)) // on initial rank and no blocking
-        p_ret->moves.emplace_back(co, E_UniqueAction::DoublePawnPush);
+        p_ret->moves.emplace_back(double_push, E_UniqueAction::DoublePawnPush);
 
     return p_ret;
 }
@@ -328,13 +330,34 @@ BoardCoor Board::execute_move(BoardCoor selection, PieceMove piece_move) {
     assert(!this->is_empty_sqr(selection));
     assert_on_board_coor(selection);
 
+    Piece moving_piece = *this->get_piece(selection);
     E_Color color = this->get_piece(selection)->color;
     E_UniqueAction action = piece_move.unique_action;
     BoardCoor target = piece_move.coor;
+
+    this->_last_double_pawn_move = constant::INVALID_COOR;
+
+    switch (moving_piece.type) {
+        case E_PieceType::King:
+            this->_can_castle_short[color] = false;
+            this->_can_castle_long[color]  = false;
+            break;
+        case E_PieceType::Rook:
+            if (selection == BoardCoor(1, nth_from_last_rank<1>[color]))
+                this->_can_castle_long[color] = false;
+            else if (selection == BoardCoor(8, nth_from_last_rank<1>[color]))
+                this->_can_castle_short[color] = false;
+            break;
+        default:
+            break;
+    }
+
     this->_get_piece_ref(target) = this->get_piece(selection);
     switch (action) {
         case E_UniqueAction::None:
+            break;
         case E_UniqueAction::DoublePawnPush:
+            this->_last_double_pawn_move = target;
             break;
         case E_UniqueAction::ShortCastle:
             std::swap(this->_get_piece_ref(selection + Vec2(1, 0)), this->_get_piece_ref(selection + Vec2(3, 0)));

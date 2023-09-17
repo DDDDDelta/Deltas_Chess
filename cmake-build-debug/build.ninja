@@ -52,36 +52,49 @@ build cmake_object_order_depends_target_Deltas_Chess: phony || CMakeFiles/Deltas
 build CMakeFiles/Deltas_Chess.dir/main.cpp.obj: CXX_COMPILER__Deltas_Chess_Debug F$:/project/Deltas-Chess/main.cpp || cmake_object_order_depends_target_Deltas_Chess
   DEP_FILE = CMakeFiles\Deltas_Chess.dir\main.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++20
+  INCLUDES = -IF:/project/Deltas-Chess/SDL2/include -IF:/project/Deltas-Chess/SDL2_ttf/include -IF:/project/Deltas-Chess/SDL2_image/include
   OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
   OBJECT_FILE_DIR = CMakeFiles\Deltas_Chess.dir
 
 build CMakeFiles/Deltas_Chess.dir/chess_game.cpp.obj: CXX_COMPILER__Deltas_Chess_Debug F$:/project/Deltas-Chess/chess_game.cpp || cmake_object_order_depends_target_Deltas_Chess
   DEP_FILE = CMakeFiles\Deltas_Chess.dir\chess_game.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++20
+  INCLUDES = -IF:/project/Deltas-Chess/SDL2/include -IF:/project/Deltas-Chess/SDL2_ttf/include -IF:/project/Deltas-Chess/SDL2_image/include
   OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
   OBJECT_FILE_DIR = CMakeFiles\Deltas_Chess.dir
 
 build CMakeFiles/Deltas_Chess.dir/pieces.cpp.obj: CXX_COMPILER__Deltas_Chess_Debug F$:/project/Deltas-Chess/pieces.cpp || cmake_object_order_depends_target_Deltas_Chess
   DEP_FILE = CMakeFiles\Deltas_Chess.dir\pieces.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++20
+  INCLUDES = -IF:/project/Deltas-Chess/SDL2/include -IF:/project/Deltas-Chess/SDL2_ttf/include -IF:/project/Deltas-Chess/SDL2_image/include
   OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
   OBJECT_FILE_DIR = CMakeFiles\Deltas_Chess.dir
 
 build CMakeFiles/Deltas_Chess.dir/moves.cpp.obj: CXX_COMPILER__Deltas_Chess_Debug F$:/project/Deltas-Chess/moves.cpp || cmake_object_order_depends_target_Deltas_Chess
   DEP_FILE = CMakeFiles\Deltas_Chess.dir\moves.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++20
+  INCLUDES = -IF:/project/Deltas-Chess/SDL2/include -IF:/project/Deltas-Chess/SDL2_ttf/include -IF:/project/Deltas-Chess/SDL2_image/include
   OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
   OBJECT_FILE_DIR = CMakeFiles\Deltas_Chess.dir
 
 build CMakeFiles/Deltas_Chess.dir/GUI.cpp.obj: CXX_COMPILER__Deltas_Chess_Debug F$:/project/Deltas-Chess/GUI.cpp || cmake_object_order_depends_target_Deltas_Chess
   DEP_FILE = CMakeFiles\Deltas_Chess.dir\GUI.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++20
+  INCLUDES = -IF:/project/Deltas-Chess/SDL2/include -IF:/project/Deltas-Chess/SDL2_ttf/include -IF:/project/Deltas-Chess/SDL2_image/include
   OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
   OBJECT_FILE_DIR = CMakeFiles\Deltas_Chess.dir
 
 build CMakeFiles/Deltas_Chess.dir/board.cpp.obj: CXX_COMPILER__Deltas_Chess_Debug F$:/project/Deltas-Chess/board.cpp || cmake_object_order_depends_target_Deltas_Chess
   DEP_FILE = CMakeFiles\Deltas_Chess.dir\board.cpp.obj.d
   FLAGS = -g -fdiagnostics-color=always -std=gnu++20
+  INCLUDES = -IF:/project/Deltas-Chess/SDL2/include -IF:/project/Deltas-Chess/SDL2_ttf/include -IF:/project/Deltas-Chess/SDL2_image/include
+  OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
+  OBJECT_FILE_DIR = CMakeFiles\Deltas_Chess.dir
+
+build CMakeFiles/Deltas_Chess.dir/controller.cpp.obj: CXX_COMPILER__Deltas_Chess_Debug F$:/project/Deltas-Chess/controller.cpp || cmake_object_order_depends_target_Deltas_Chess
+  DEP_FILE = CMakeFiles\Deltas_Chess.dir\controller.cpp.obj.d
+  FLAGS = -g -fdiagnostics-color=always -std=gnu++20
+  INCLUDES = -IF:/project/Deltas-Chess/SDL2/include -IF:/project/Deltas-Chess/SDL2_ttf/include -IF:/project/Deltas-Chess/SDL2_image/include
   OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
   OBJECT_FILE_DIR = CMakeFiles\Deltas_Chess.dir
 
@@ -93,9 +106,9 @@ build CMakeFiles/Deltas_Chess.dir/board.cpp.obj: CXX_COMPILER__Deltas_Chess_Debu
 #############################################
 # Link the executable Deltas_Chess.exe
 
-build Deltas_Chess.exe: CXX_EXECUTABLE_LINKER__Deltas_Chess_Debug CMakeFiles/Deltas_Chess.dir/main.cpp.obj CMakeFiles/Deltas_Chess.dir/chess_game.cpp.obj CMakeFiles/Deltas_Chess.dir/pieces.cpp.obj CMakeFiles/Deltas_Chess.dir/moves.cpp.obj CMakeFiles/Deltas_Chess.dir/GUI.cpp.obj CMakeFiles/Deltas_Chess.dir/board.cpp.obj
+build Deltas_Chess.exe: CXX_EXECUTABLE_LINKER__Deltas_Chess_Debug CMakeFiles/Deltas_Chess.dir/main.cpp.obj CMakeFiles/Deltas_Chess.dir/chess_game.cpp.obj CMakeFiles/Deltas_Chess.dir/pieces.cpp.obj CMakeFiles/Deltas_Chess.dir/moves.cpp.obj CMakeFiles/Deltas_Chess.dir/GUI.cpp.obj CMakeFiles/Deltas_Chess.dir/board.cpp.obj CMakeFiles/Deltas_Chess.dir/controller.cpp.obj | F$:/project/Deltas-Chess/SDL2/lib/x64/SDL2main.lib F$:/project/Deltas-Chess/SDL2/lib/x64/SDL2.lib F$:/project/Deltas-Chess/SDL2/lib/x64/SDL2.dll F$:/project/Deltas-Chess/SDL2_ttf/lib/x64/SDL2_ttf.lib F$:/project/Deltas-Chess/SDL2_ttf/lib/x64/SDL2_ttf.dll F$:/project/Deltas-Chess/SDL2_image/lib/x64/SDL2_image.lib F$:/project/Deltas-Chess/SDL2_image/lib/x64/SDL2_image.dll
   FLAGS = -g
-  LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  LINK_LIBRARIES = F:/project/Deltas-Chess/SDL2/lib/x64/SDL2main.lib  F:/project/Deltas-Chess/SDL2/lib/x64/SDL2.lib  F:/project/Deltas-Chess/SDL2/lib/x64/SDL2.dll  F:/project/Deltas-Chess/SDL2_ttf/lib/x64/SDL2_ttf.lib  F:/project/Deltas-Chess/SDL2_ttf/lib/x64/SDL2_ttf.dll  F:/project/Deltas-Chess/SDL2_image/lib/x64/SDL2_image.lib  F:/project/Deltas-Chess/SDL2_image/lib/x64/SDL2_image.dll  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Deltas_Chess.dir
   POST_BUILD = cd .
   PRE_LINK = cd .

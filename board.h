@@ -9,10 +9,11 @@
 #include <ranges>
 #include <cassert>
 #include <type_traits>
+#include "iostream"
 
-#include "code_utils.inc"
 #include "pieces.h"
 #include "moves.h"
+#include "code_utils.inc"
 
 NAMESPACE_DDDELTA_START
 using OptPiece = std::optional<Piece>;
@@ -20,10 +21,19 @@ using OptPiece = std::optional<Piece>;
 
 template <typename T>
 struct colored_pair : std::pair<T, T> {
-    inline colored_pair(T first, T second) : std::pair<T, T>(first, second) {}
-    inline T& operator [](E_Color color) { return to_underlying(color) ? this->first : this->second; }
-    inline const T& operator [](E_Color color) const { return to_underlying(color) ? this->first : this->second; }
+    inline constexpr colored_pair(T first, T second) : std::pair<T, T>(first, second) {}
+    inline constexpr T& operator [](E_Color color) { return to_underlying(color) ? this->first : this->second; }
+    inline constexpr const T& operator [](E_Color color) const { return to_underlying(color) ? this->first : this->second; }
 };
+
+
+template <i32 Distance> requires (Distance <= 8 && Distance >= 1)
+static constexpr colored_pair<i32> nth_from_last_rank { 0 + Distance, 9 - Distance };
+
+
+namespace throwable {
+class pawn_promote;
+}
 
 
 class Board {
@@ -52,6 +62,7 @@ public:
     NODISCARD bool is_checkmated() const { return false; }
     NODISCARD bool is_a_draw() const { return false; }
 
+    // executes a legal move
     // returns constant::INVALID_COOR if no checks
     // returns the coordinate of king under check otherwise
     BoardCoor execute_move(BoardCoor selection, PieceMove piece_move);
@@ -81,6 +92,8 @@ private:
     PossibleMovement* _linear_move(PossibleMovement* movement, BoardCoor co) const;
 
     NODISCARD BoardCoor _is_in_check(E_Color color) const { return constant::INVALID_COOR; }
+
+    friend throwable::pawn_promote;
 };
 
 NAMESPACE_DDDELTA_END
