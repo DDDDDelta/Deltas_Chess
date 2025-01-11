@@ -1,4 +1,4 @@
-# Deltas_Chess
+# Deltas_Qt_Chess
 Deltas-Chess is a small and efficient chess game built using Qt Framework and C++ programming language. It focuses on being fully object-oriented and aims to provide an enjoyable chess-playing experience.
 
 ## Features
