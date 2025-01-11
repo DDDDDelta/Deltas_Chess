@@ -110,7 +110,6 @@ namespace stdrng = std::ranges;
 #endif // (defined _RANGES_ALGO_H || defined _GLIBCXX_RANGES) && !defined CODE_UTILS_TYPES_STDRNG
 
 
-#if defined _GLIBCXX_RANGES && !defined CODE_UTILS_TYPES_STDVW
-#define CODE_UTILS_TYPES_STDVW
-namespace stdvw = std::views;
-#endif // defined _GLIBCXX_RANGES && !defined CODE_UTILS_TYPES_STDVW
+#if defined _GLIBCXX_RANGES && !defined CODE_UTILS_TYPES_STDVWS
+namespace stdvws = std::views;
+#endif // defined _GLIBCXX_RANGES && !defined CODE_UTILS_TYPES_STDVWS

@@ -1,0 +1,25 @@
+<RCC>
+    <qresource prefix="/board">
+        <file>imgs/bB.png</file>
+        <file>imgs/bK.png</file>
+        <file>imgs/blackT.png</file>
+        <file>imgs/bN.png</file>
+        <file>imgs/bP.png</file>
+        <file>imgs/bQ.png</file>
+        <file>imgs/bR.png</file>
+        <file>imgs/captureT.png</file>
+        <file>imgs/checkedT.png</file>
+        <file>imgs/hoverT.png</file>
+        <file>imgs/moveT.png</file>
+        <file>imgs/promoteB.png</file>
+        <file>imgs/protectT.png</file>
+        <file>imgs/selectT.png</file>
+        <file>imgs/wB.png</file>
+        <file>imgs/whiteT.png</file>
+        <file>imgs/wK.png</file>
+        <file>imgs/wN.png</file>
+        <file>imgs/wP.png</file>
+        <file>imgs/wQ.png</file>
+        <file>imgs/wR.png</file>
+    </qresource>
+</RCC>
