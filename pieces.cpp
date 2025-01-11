@@ -26,6 +26,11 @@ bool BoardCoor::on_board() const {
 }
 
 
+Vec2::operator bool() const {
+    return *this != constant::INVALID_COOR;
+}
+
+
 std::strong_ordering operator <=>(const Piece& lhs, const Piece& rhs) {
     if (lhs.color != rhs.color)
         return lhs.color <=> rhs.color;

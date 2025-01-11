@@ -2,9 +2,10 @@
 #define DELTAS_CHESS_PIECES_H
 
 #include <cstdint>
-#include <string>
-#include <vector>
 #include <compare>
+
+#include <QtGlobal>
+#include <QHash>
 
 #include "code_utils.inc"
 
@@ -14,12 +15,12 @@ struct Vec2 {
     i32 x;
     i32 y;
 
-    [[nodiscard]]
     bool on_board() const;
     bool operator ==(const Vec2& rhs) const = default;
     Vec2 operator +(Vec2 rhs) const;
     Vec2 operator -(Vec2 rhs) const;
     Vec2& operator +=(Vec2 rhs);
+    explicit operator bool() const;
 };
 
 
@@ -77,4 +78,17 @@ inline constexpr Piece BlackKnight { E_Color::Black, E_PieceType::Knight };
 inline constexpr Piece BlackPawn   { E_Color::Black, E_PieceType::Pawn };
 }
 NAMESPACE_DDDELTA_END
+
+namespace std {
+
+template <>
+struct hash<DDDelta::Piece> {
+    std::size_t operator ()(DDDelta::Piece piece) {
+        return
+            std::hash<DDDelta::E_Color>()(piece.color) ^
+            std::hash<DDDelta::E_PieceType>()(piece.type);
+    }
+};
+
+}
 

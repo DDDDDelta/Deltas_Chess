@@ -2,14 +2,11 @@
 #define DELTAS_CHESS_NEW_BOARD_H
 
 #include <array>
-#include <cstdint>
 #include <optional>
 #include <utility>
-#include <memory>
 #include <ranges>
 #include <cassert>
-#include <type_traits>
-#include "iostream"
+
 
 #include "pieces.h"
 #include "moves.h"
@@ -28,7 +25,7 @@ struct colored_pair : std::pair<T, T> {
 
 
 template <i32 Distance> requires (Distance <= 8 && Distance >= 1)
-static constexpr colored_pair<i32> nth_from_last_rank { 0 + Distance, 9 - Distance };
+inline constexpr colored_pair<i32> nth_from_last_rank { 0 + Distance, 9 - Distance };
 
 
 namespace throwable {
@@ -42,6 +39,7 @@ public:
 
 private:
     using BoolPair = colored_pair<bool>;
+    using CoorPair = colored_pair<BoardCoor>;
 
 public:
     Board();
@@ -49,17 +47,15 @@ public:
     NODISCARD inline
     OptPiece get_piece(BoardCoor coor) const { assert_on_board_coor(coor); return this->_board[coor.x - 1][coor.y - 1]; }
     NODISCARD inline
-    OptPiece get_piece(i32 x, i32 y) const { assert_on_board_xy(x, y); return this->_board[x - 1][y - 1]; };
+    OptPiece get_piece(i32 x, i32 y) const { assert_on_board_xy(x, y); return this->_board[x - 1][y - 1]; }
     NODISCARD PossibleMovement* get_move(BoardCoor coor) const;
     NODISCARD PossibleMovement* get_move(i32 x, i32 y) const;
-    NODISCARD inline
-    BoardCoor in_check() const { return this->_in_check; }
     NODISCARD inline
     bool is_empty_sqr(BoardCoor coor) const { assert_on_board_coor(coor); return !this->get_piece(coor); }
     NODISCARD inline
     bool is_empty_sqr(i32 x, i32 y) const { assert_on_board_xy(x, y); return !this->get_piece(x, y); }
 
-    NODISCARD bool is_checkmated() const { return false; }
+    NODISCARD bool is_checkmated() const;
     NODISCARD bool is_a_draw() const { return false; }
 
     // executes a legal move
@@ -68,13 +64,36 @@ public:
     BoardCoor execute_move(BoardCoor selection, PieceMove piece_move);
 
     NODISCARD inline
-    auto board_range() const { return this->_board | stdvw::join; }
+    auto board_range() const { return this->_board | stdvws::join; }
 
 private:
+    struct CheckingCoor {
+    public:
+        constexpr CheckingCoor(BoardCoor attacker1 = constant::INVALID_COOR,
+                               BoardCoor attacker2 = constant::INVALID_COOR) :
+            _first(attacker1), _second(attacker2) {}
+
+        CheckingCoor& operator =(CheckingCoor&&) = default;
+
+        NODISCARD inline i32 attacker_count() const { return static_cast<bool>(this->_first) + static_cast<bool>(this->_second); }
+        inline CheckingCoor& reset(BoardCoor coor1 = constant::INVALID_COOR,
+                                   BoardCoor coor2 = constant::INVALID_COOR) {
+            this->_first = coor1; this->_second = coor2; return *this;
+        }
+        NODISCARD inline BoardCoor get_first() const { return this->_first; }
+        NODISCARD inline BoardCoor get_second() const { return this->_second; }
+
+        inline CheckingCoor& add_attacker(BoardCoor coor);
+
+    private:
+        BoardCoor _first;
+        BoardCoor _second;
+    } _attackers;
+
     ChessBoard_t _board;
     BoolPair _can_castle_short;
     BoolPair _can_castle_long;
-    BoardCoor _in_check;
+    CoorPair _king_pos;
     BoardCoor _last_double_pawn_move;
 
 private:
@@ -85,15 +104,14 @@ private:
     NODISCARD PossibleMovement* _rook_move(BoardCoor co) const;
     NODISCARD PossibleMovement* _queen_move(BoardCoor co) const;
 
-    OptPiece& _get_piece_ref(BoardCoor coor) { assert_on_board_coor(coor); return this->_board[coor.x - 1][coor.y - 1]; }
-    OptPiece& _get_piece_ref(i32 x, i32 y) { assert_on_board_xy(x, y); return this->_board[x - 1][y - 1]; }
+    inline OptPiece& _get_piece_ref(BoardCoor coor) { assert_on_board_coor(coor); return this->_board[coor.x - 1][coor.y - 1]; }
+    inline OptPiece& _get_piece_ref(i32 x, i32 y) { assert_on_board_xy(x, y); return this->_board[x - 1][y - 1]; }
 
     PossibleMovement* _diagonal_move(PossibleMovement* p_movement, BoardCoor co) const;
     PossibleMovement* _linear_move(PossibleMovement* movement, BoardCoor co) const;
 
-    NODISCARD BoardCoor _is_in_check(E_Color color) const { return constant::INVALID_COOR; }
+    NODISCARD bool _under_attack(BoardCoor target, E_Color color) const;
 
     friend throwable::pawn_promote;
 };
-
 NAMESPACE_DDDELTA_END

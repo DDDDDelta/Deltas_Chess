@@ -1,20 +1,11 @@
 #pragma once
 #define DELTAS_CHESS_CHESS_GAME_H
 
-#include <vector>
-#include <cstdint>
-#include <utility>
-#include <tuple>
 #include <memory>
 #include <optional>
 #include <cassert>
-#include <algorithm>
-#include <ranges>
-#include <type_traits>
-#include <iostream>
 
 #include "pieces.h"
-#include "player.h"
 #include "board.h"
 #include "moves.h"
 #include "code_utils.inc"
@@ -37,16 +28,15 @@ enum class E_Result : u8 {
 };
 
 
-
-
 class ChessGame {
 public:
-    ChessGame(Player&& pwhite, Player&& pblack);
+    ChessGame();
 
     // observers
     NODISCARD inline E_Result get_result() const { return this->_res; }
     NODISCARD inline OptPiece get_piece(i32 x, i32 y) const { assert_on_board_xy(x, y); return this->_board.get_piece(x, y); }
     NODISCARD inline OptPiece get_piece(BoardCoor co) const { assert_on_board_coor(co); return this->_board.get_piece(co); }
+    NODISCARD inline OptPiece operator [](BoardCoor co) const { return this->get_piece(co); }
     NODISCARD inline
     std::optional<BoardCoor> get_selection() const {
         if (this->_selected == constant::INVALID_COOR)
@@ -54,17 +44,14 @@ public:
         else
             return this->_selected;
     }
-    NODISCARD inline BoardCoor in_check() const { return this->_board.in_check(); }
-
-    const Player player_white;
-    const Player player_black;
+    NODISCARD inline const PossibleMovement* get_possible_move() const { return this->_up_possible_move.get(); }
 
     // operators
     /*
-     * returns std::weak_ptr bound to nullptr if selection is illegal
+     * returns nullptr if selection is illegal
      * modifies _selected if legal
      */
-    std::weak_ptr<const PossibleMovement> select_piece(BoardCoor co);
+    const PossibleMovement* select_piece(BoardCoor co);
     /*
      * returns std::nullopt if execution is illegal
      * returns E_UniqueAction according to executed move
@@ -78,7 +65,7 @@ private:
     BoardCoor _selected;
     E_Result _res;
     Board _board;
-    std::shared_ptr<PossibleMovement> _sp_possible_move;
+    std::unique_ptr<PossibleMovement> _up_possible_move;
 };
 
 
@@ -86,15 +73,16 @@ namespace throwable {
 class pawn_promote {
     // friend of Board
 public:
-    pawn_promote(Board* board, BoardCoor co, BoardCoor original);
+    pawn_promote(Board* board, BoardCoor co, BoardCoor original, E_Color* turn);
     ~pawn_promote();
+    // this function is asserted to be called only once
     bool select_promotion(BoardCoor selection);
 
 private:
     Board* _p_board;
     BoardCoor _target;
     BoardCoor _original;
-    E_Color _color;
+    E_Color* _turn;
     bool _used_flag = false;
 };
 

@@ -22,8 +22,8 @@ static inline constexpr Board::ChessBoard_t starting_position {
 
 
 Board::Board() :
-    _board(starting_position), _can_castle_long(true, true), _can_castle_short(true, true),
-    _in_check(constant::INVALID_COOR), _last_double_pawn_move(constant::INVALID_COOR) {}
+    _board(starting_position), _can_castle_long(true, true), _can_castle_short(true, true), _king_pos({ 5, 1 }, { 5, 8 }),
+    _attackers(), _last_double_pawn_move(constant::INVALID_COOR) {}
 
 
 static inline std::array<BoardCoor, 8> all_king_movement(BoardCoor co) {
@@ -45,32 +45,32 @@ static inline std::array<BoardCoor, 8> all_knight_movement(BoardCoor co) {
 }
 
 
-static inline constexpr auto adap_to_piecemove = stdvw::transform([](BoardCoor coor) -> PieceMove {
+static inline constexpr auto adap_to_piecemove = stdvws::transform([](BoardCoor coor) -> PieceMove {
     return { coor, E_UniqueAction::None };
 });
 
 
-static inline constexpr auto adap_remove_off_board = stdvw::filter([](BoardCoor coor) {
+static inline constexpr auto adap_remove_off_board = stdvws::filter([](BoardCoor coor) {
     return coor.on_board();
 });
 
 
 static auto adap_remove_empty(const Board* const self) {
-    return stdvw::filter([self](BoardCoor coor) {
+    return stdvws::filter([self](BoardCoor coor) {
         return static_cast<bool>(self->get_piece(coor));
     });
 }
 
 
 static auto adap_remove_pieces(const Board* const self) {
-    return stdvw::filter([self](BoardCoor coor) {
+    return stdvws::filter([self](BoardCoor coor) {
         return !self->get_piece(coor);
     });
 }
 
 
 static auto adap_remove_color_of(const Board* const self, E_Color color) {
-    return stdvw::filter([self, color](BoardCoor coor) {
+    return stdvws::filter([self, color](BoardCoor coor) {
         return !(self->get_piece(coor) && self->get_piece(coor)->color == color);
     });
 }
@@ -78,7 +78,7 @@ static auto adap_remove_color_of(const Board* const self, E_Color color) {
 
 // TODO: finish this
 static auto adap_remove_attacked(Board* self, E_Color color) {
-    return stdvw::filter([color](BoardCoor co) {
+    return stdvws::filter([color](BoardCoor co) {
 
         return true;
     });
@@ -86,8 +86,6 @@ static auto adap_remove_attacked(Board* self, E_Color color) {
 
 
 PossibleMovement* Board::_knight_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
-
     auto all_move = all_knight_movement(co);
     auto valid_move = all_move | adap_remove_off_board;
 
@@ -112,17 +110,15 @@ PossibleMovement* Board::_knight_move(BoardCoor co) const {
 
 
 PossibleMovement* Board::_diagonal_move(PossibleMovement* p_movement, BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
+    E_Color selected_color = this->get_piece(co)->color;
 
-    E_Color curr_color = this->get_piece(co)->color;
-
-    auto insert_move = [this, p_movement, curr_color](BoardCoor co) mutable {
+    auto insert_move = [this, p_movement, selected_color](BoardCoor co) mutable {
         if (!co.on_board()) {
             return false;
         } else if (this->is_empty_sqr(co)) {
             p_movement->moves.emplace_back(co, E_UniqueAction::None);
             return true;
-        } else if (this->get_piece(co)->color == curr_color) {
+        } else if (this->get_piece(co)->color == selected_color) {
             p_movement->protects.emplace_back(co, E_UniqueAction::None);
             return false;
         } else {
@@ -142,17 +138,15 @@ PossibleMovement* Board::_diagonal_move(PossibleMovement* p_movement, BoardCoor 
 
 
 PossibleMovement* Board::_linear_move(PossibleMovement* p_movement, BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
+    E_Color selected = this->get_piece(co)->color;
 
-    E_Color curr_color = this->get_piece(co)->color;
-
-    auto insert_move = [this, p_movement, curr_color](BoardCoor co) mutable {
+    auto insert_move = [this, p_movement, selected](BoardCoor co) mutable {
         if (!co.on_board()) {
             return false;
         } else if (this->is_empty_sqr(co)) {
             p_movement->moves.emplace_back(co, E_UniqueAction::None);
             return true;
-        } else if (this->get_piece(co)->color == curr_color) {
+        } else if (this->get_piece(co)->color == selected) {
             p_movement->protects.emplace_back(co, E_UniqueAction::None);
             return false;
         } else {
@@ -172,23 +166,18 @@ PossibleMovement* Board::_linear_move(PossibleMovement* p_movement, BoardCoor co
 
 
 PossibleMovement* Board::_bishop_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
-
     auto p_ret = new PossibleMovement;
     return this->_diagonal_move(p_ret, co);
 }
 
 
 PossibleMovement* Board::_rook_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
     auto p_ret = new PossibleMovement;
     return this->_linear_move(p_ret, co);
 }
 
 
 PossibleMovement* Board::_queen_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
-
     auto p_ret = new PossibleMovement;
     this->_linear_move(p_ret, co);
     this->_diagonal_move(p_ret, co);
@@ -197,7 +186,6 @@ PossibleMovement* Board::_queen_move(BoardCoor co) const {
 
 
 PossibleMovement* Board::_pawn_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
     assert(co.y != 1 && co.y != 8);
 
     E_Color selected_color = this->get_piece(co)->color;
@@ -206,7 +194,7 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
     i32 initial_rank = nth_from_last_rank<2>[selected_color];
     i32 en_passant_rank = nth_from_last_rank<5>[selected_color];
 
-    std::array<BoardCoor, 2> diagonal {
+    const std::array<BoardCoor, 2> diagonal {
         BoardCoor(co.x + 1, co.y + direction),
         BoardCoor(co.x - 1, co.y + direction)
     };
@@ -215,8 +203,6 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
 
     for (BoardCoor coor : diagonal | adap_remove_off_board) {
         if (this->is_empty_sqr(coor)) {
-            LOG_TO_STDOUT("last double pawn move:");
-            LOG_TO_STDOUT(this->_last_double_pawn_move.x);
             if (co.y == en_passant_rank && this->_last_double_pawn_move.x == coor.x)
                 p_ret->captures.emplace_back(coor, E_UniqueAction::EnPassant);
 
@@ -235,7 +221,9 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
 
     BoardCoor single_push = co + Vec2(0, direction);
     if (single_push.on_board() && this->is_empty_sqr(single_push))
-        p_ret->moves.emplace_back(single_push, E_UniqueAction::None);
+        p_ret->moves.emplace_back(single_push, single_push.y == promotion_rank ?
+                                               E_UniqueAction::Promote :
+                                               E_UniqueAction::None);
     else
         return p_ret;
 
@@ -250,9 +238,7 @@ PossibleMovement* Board::_pawn_move(BoardCoor co) const {
 
 // TODO: finish this
 PossibleMovement* Board::_king_move(BoardCoor co) const {
-    assert(!this->is_empty_sqr(co));
-
-    E_Color color = this->get_piece(co)->color;
+    E_Color selected_color = this->get_piece(co)->color;
     auto all_move = all_king_movement(co);
     auto valid_move = all_move | adap_remove_off_board;
 
@@ -269,25 +255,30 @@ PossibleMovement* Board::_king_move(BoardCoor co) const {
         | adap_to_piecemove;
 
     auto ret = new PossibleMovement {
-        { move_range.begin(), move_range.end() },
+        { move_range.begin(),    move_range.end()    },
         { capture_range.begin(), capture_range.end() },
         { protect_range.begin(), protect_range.end() }
     };
 
     BoardCoor short_castle_target = co + Vec2(2, 0);
-    if (this->_can_castle_short[color] &&
+    if (this->_can_castle_short[selected_color] &&
         this->is_empty_sqr(short_castle_target) &&
         this->is_empty_sqr(co + Vec2(1, 0)))
         ret->moves.emplace_back(short_castle_target, E_UniqueAction::ShortCastle);
 
     BoardCoor long_castle_target = co - Vec2(2, 0);
-    if (this->_can_castle_long[color] &&
+    if (this->_can_castle_long[selected_color] &&
         this->is_empty_sqr(co - Vec2(3, 0)) &&
         this->is_empty_sqr(short_castle_target) &&
         this->is_empty_sqr(co - Vec2(1, 0)))
         ret->moves.emplace_back(long_castle_target, E_UniqueAction::LongCastle);
 
     return ret;
+}
+
+
+bool Board::is_checkmated() const {
+    return false;
 }
 
 
@@ -326,6 +317,11 @@ PossibleMovement* Board::get_move(i32 x, i32 y) const {
 }
 
 
+bool Board::_under_attack(BoardCoor target, E_Color color) const {
+    return false;
+}
+
+
 BoardCoor Board::execute_move(BoardCoor selection, PieceMove piece_move) {
     assert(!this->is_empty_sqr(selection));
     assert_on_board_coor(selection);
@@ -341,6 +337,7 @@ BoardCoor Board::execute_move(BoardCoor selection, PieceMove piece_move) {
         case E_PieceType::King:
             this->_can_castle_short[color] = false;
             this->_can_castle_long[color]  = false;
+            this->_king_pos[color] = selection;
             break;
         case E_PieceType::Rook:
             if (selection == BoardCoor(1, nth_from_last_rank<1>[color]))
@@ -375,6 +372,18 @@ BoardCoor Board::execute_move(BoardCoor selection, PieceMove piece_move) {
 
     this->_get_piece_ref(selection).reset();
 
-    return this->_in_check = this->_is_in_check(color);
+    return constant::INVALID_COOR;
+}
+
+
+Board::CheckingCoor& Board::CheckingCoor::add_attacker(BoardCoor coor) {
+    assert(this->attacker_count() < 2);
+
+    if (this->_first != constant::INVALID_COOR)
+        this->_first = coor;
+    else
+        this->_second = coor;
+
+    return *this;
 }
 NAMESPACE_DDDELTA_END
