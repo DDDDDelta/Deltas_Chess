@@ -5,7 +5,7 @@ Deltas-Chess is a small and efficient chess game built using Qt Framework and C+
 
 - Fully Object-Oriented: The codebase is designed using object-oriented principles, making it modular and easy to extend.
 - Chess Game Logic: Implements the complete set of chess game rules, including piece movement, capturing, castling, en passant, promotion, check(work in progress), and checkmate(work in progress).
-- User Interface: Utilizes the SDL library for graphical rendering, enabling a visually appealing and interactive user interface.
+- User Interface: Utilizes the Qt Framework for graphical rendering, enabling a visually appealing and interactive user interface.
 - Lightweight and Efficient: The project is optimized for performance and strives to utilize minimal system resources.
 
 ## Contributers
