@@ -1,5 +1,5 @@
 # Deltas_Chess
-Deltas-Chess is a small and efficient chess game built using C++ language and the SDL library. It focuses on being fully object-oriented and aims to provide an enjoyable chess-playing experience.
+Deltas-Chess is a small and efficient chess game built using Qt Framework and C++ programming language. It focuses on being fully object-oriented and aims to provide an enjoyable chess-playing experience.
 
 ## Features
 
@@ -11,26 +11,18 @@ Deltas-Chess is a small and efficient chess game built using C++ language and th
 ## Contributers
 
 The project is a collabration between two University of Waterloo students
-- Steven(Chenwei) "DDDDDelta" Shi: Project management, program design, game rules and logic
+- Steven(Chenwei) "DDDDDelta" Shi: Project management, program design, game rules and logic, refactoring this project to be Qt based
 - Bob(Shenyan) "BobZheng00" Zheng: frontend rendering, testing
 
 ## Prerequisites
 
-- C++ Runtime: Make sure you have C++ Runtime installed on your system.
+- Requires Qt 15.0.0 above
 
 ## Getting Started
 
-1. Download the release package and unzip
-2. Execute run.bat
-(files are a bit messy in origin/master, it is not recommanded to compile it yourself)
-
-## Usage
-
-- Execute run.bat.
-- Click to select pieces, click again to execute move.
-- The game will display notifications for promotion, check, and checkmate scenarios.
-- Enjoy playing chess with Deltas-Chess!
-
+1. Clone this repo
+2. Compile with Qt Creator 15.0.0 or above
+3. Run
 
 ## License
 
@@ -49,7 +41,7 @@ This license grants:
  
 ## Acknowledgements
 
-- The developers and contributors of the SDL library for providing a powerful framework for graphics and user interface in C++.
+- The developers and contributors of the Qt Framework for providing a powerful framework for graphics and user interface in C++.
 - The creators and maintainers of the C++ programming language for its efficiency and object-oriented capabilities.
 
 
