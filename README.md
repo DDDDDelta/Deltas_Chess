@@ -26,18 +26,7 @@ The project is a collabration between two University of Waterloo students
 
 ## License
 
-This project is licensed under the MICROSOFT REFERENCE SOURCE LICENSE (MS-RSL).
-
-This license grants:
-1. Access to the source code.
-2. Use for reference purposes.
-
-**Limitations:**
-1. No distribution of source code for commercial or non-commercial purposes.
-2. No modification of source code for commercial or non-commercial purposes.
-3. No sublicensing
-4. No patent rights
-5. No trademarks or logos
+This project is now open sourced. Refer to LICENSE.txt for more info.
  
 ## Acknowledgements
 
